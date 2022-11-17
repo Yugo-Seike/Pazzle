@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include "Area.h"
 
 int function_status = 0, White;
 char KeyBuf[256];
@@ -13,114 +14,112 @@ int masu;
 void Opening() {
     //DrawString(100, 100, "タイトル画面", White);
     
-        //ChangeWindowMode(true);
-        DxLib_Init();
-        int window_x, window_y, color;
-        GetScreenState(&window_x, &window_y, &color);
+    //ChangeWindowMode(true);
+    DxLib_Init();
+    int window_x, window_y, color;
+    GetScreenState(&window_x, &window_y, &color);
        
-        //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
-        title = LoadGraph("sozai/title2.png");
-        DrawExtendGraph(0, 0, 650, 480, title, FALSE);
+    //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
+    title = LoadGraph("sozai/title2.png");
+    DrawExtendGraph(0, 0, 650, 480, title, FALSE);
 
-        /*
-        DrawBox((window_x / 8 * 1.1), (window_y / 11) * 5.6, (window_x / 8) * 2, (window_y / 12) * 8.2, GetColor(200, 0, 0), false);  //1
-        DrawBox((window_x / 8 * 2.1), (window_y / 11) * 5, (window_x / 8) * 3.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //2
-        DrawBox((window_x / 8 * 3.1), (window_y / 11) * 5.6, (window_x / 8) * 4.05, (window_y / 12) * 8.2, GetColor(0, 0, 200), false);  //3
-        DrawBox((window_x / 8 * 4.1), (window_y / 11) * 5, (window_x / 8) * 5.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //4
-        DrawBox((window_x / 8 * 5.1), (window_y / 11) * 5.6, (window_x / 8) * 6.05, (window_y / 12) * 8.2, GetColor(0, 0, 200), false);  //5
-        DrawBox((window_x / 8 * 6.1), (window_y / 11) * 5, (window_x / 8) * 7.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //6
+    /*
+    DrawBox((window_x / 8 * 1.1), (window_y / 11) * 5.6, (window_x / 8) * 2, (window_y / 12) * 8.2, GetColor(200, 0, 0), false);  //1
+    DrawBox((window_x / 8 * 2.1), (window_y / 11) * 5, (window_x / 8) * 3.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //2
+    DrawBox((window_x / 8 * 3.1), (window_y / 11) * 5.6, (window_x / 8) * 4.05, (window_y / 12) * 8.2, GetColor(0, 0, 200), false);  //3
+    DrawBox((window_x / 8 * 4.1), (window_y / 11) * 5, (window_x / 8) * 5.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //4
+    DrawBox((window_x / 8 * 5.1), (window_y / 11) * 5.6, (window_x / 8) * 6.05, (window_y / 12) * 8.2, GetColor(0, 0, 200), false);  //5
+    DrawBox((window_x / 8 * 6.1), (window_y / 11) * 5, (window_x / 8) * 7.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //6
 
-        DrawBox((window_x / 8 * 1.1), (window_y / 11) * 8.5, (window_x / 8) * 2, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //7
-        DrawBox((window_x / 8 * 2.1), (window_y / 11) * 7.9, (window_x / 8) * 3.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //8
-        DrawBox((window_x / 8 * 3.1), (window_y / 11) * 8.5, (window_x / 8) * 4.05, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //9
-        DrawBox((window_x / 8 * 4.1), (window_y / 11) * 7.9, (window_x / 8) * 5.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //10
-        DrawBox((window_x / 8 * 5.1), (window_y / 11) * 8.5, (window_x / 8) * 6.05, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //11
-        DrawBox((window_x / 8 * 6.1), (window_y / 11) * 7.9, (window_x / 8) * 7.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //12
-        */
+    DrawBox((window_x / 8 * 1.1), (window_y / 11) * 8.5, (window_x / 8) * 2, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //7
+    DrawBox((window_x / 8 * 2.1), (window_y / 11) * 7.9, (window_x / 8) * 3.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //8
+    DrawBox((window_x / 8 * 3.1), (window_y / 11) * 8.5, (window_x / 8) * 4.05, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //9
+    DrawBox((window_x / 8 * 4.1), (window_y / 11) * 7.9, (window_x / 8) * 5.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //10
+    DrawBox((window_x / 8 * 5.1), (window_y / 11) * 8.5, (window_x / 8) * 6.05, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //11
+    DrawBox((window_x / 8 * 6.1), (window_y / 11) * 7.9, (window_x / 8) * 7.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //12
+    */
 
-        SetFontSize(32); 
-        if (KeyBuf[KEY_INPUT_W] == 1) {
-            function_status = 1;
-        }
-        if (GetMouseInput() & MOUSE_INPUT_LEFT) {
-            GetMousePoint(&mouseX, &mouseY);
-            //上段
-            //1
-            if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
-                if ((mouseX >= (window_x / 8 * 1.1)) && (mouseX <= (window_x / 8) * 2)) {
-                    function_status = 1;
-                }
-            }
-            //2
-            if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
-                if ((mouseX >= (window_x / 8 * 2.1)) && (mouseX <= (window_x / 8) * 3.05)) {
-                    function_status = 2;
-                }
-            }
-            //3
-            if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
-                if ((mouseX >= (window_x / 8 * 3.1)) && (mouseX <= (window_x / 8) * 4.05)) {
-                    function_status = 3;
-                }
-            }
-            //4
-            if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
-                if ((mouseX >= (window_x / 8 * 4.1)) && (mouseX <= (window_x / 8) * 5.05)) {
-                    function_status = 4;
-                }
-            }
-            //5
-            if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
-                if ((mouseX >= (window_x / 8 * 5.1)) && (mouseX <= (window_x / 8) * 6.05)) {
-                    function_status = 5;
-                }
-            }
-            //6
-            if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
-                if ((mouseX >= (window_x / 8 * 6.1)) && (mouseX <= (window_x / 8) * 7.05)) {
-                    function_status = 6;
-                }
-            }
-            //下段
-            //7
-            if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
-                if ((mouseX >= (window_x / 8 * 1.1)) && (mouseX <= (window_x / 8) * 2)) {
-                    function_status = 7;
-                }
-            }
-            //8
-            if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
-                if ((mouseX >= (window_x / 8 * 2.1)) && (mouseX <= (window_x / 8) * 3.05)) {
-                    function_status = 8;
-                }
-            }
-            //9
-            if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
-                if ((mouseX >= (window_x / 8 * 3.1)) && (mouseX <= (window_x / 8) * 4.05)) {
-                    function_status = 9;
-                }
-            }
-            //10
-            if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
-                if ((mouseX >= (window_x / 8 * 4.1)) && (mouseX <= (window_x / 8) * 5.05)) {
-                    function_status = 10;
-                }
-            }
-            //11
-            if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
-                if ((mouseX >= (window_x / 8 * 5.1)) && (mouseX <= (window_x / 8) * 6.05)) {
-                    function_status = 11;
-                }
-            }
-            //12
-            if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
-                if ((mouseX >= (window_x / 8 * 6.1)) && (mouseX <= (window_x / 8) * 7.05)) {
-                    function_status = 12;
-                }
+    SetFontSize(32); 
+    if (KeyBuf[KEY_INPUT_W] == 1) {
+        function_status = 1;
+    }
+    if (GetMouseInput() & MOUSE_INPUT_LEFT) {
+        GetMousePoint(&mouseX, &mouseY);
+        //上段
+        //1
+        if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
+            if ((mouseX >= (window_x / 8 * 1.1)) && (mouseX <= (window_x / 8) * 2)) {
+                function_status = 1;
             }
         }
-        
-      
+        //2
+        if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
+            if ((mouseX >= (window_x / 8 * 2.1)) && (mouseX <= (window_x / 8) * 3.05)) {
+                function_status = 2;
+            }
+        }
+        //3
+        if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
+            if ((mouseX >= (window_x / 8 * 3.1)) && (mouseX <= (window_x / 8) * 4.05)) {
+                function_status = 3;
+            }
+        }
+        //4
+        if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
+            if ((mouseX >= (window_x / 8 * 4.1)) && (mouseX <= (window_x / 8) * 5.05)) {
+                function_status = 4;
+            }
+        }
+        //5
+        if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
+            if ((mouseX >= (window_x / 8 * 5.1)) && (mouseX <= (window_x / 8) * 6.05)) {
+                function_status = 5;
+            }
+        }
+        //6
+        if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
+            if ((mouseX >= (window_x / 8 * 6.1)) && (mouseX <= (window_x / 8) * 7.05)) {
+                function_status = 6;
+            }
+        }
+        //下段
+        //7
+        if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
+            if ((mouseX >= (window_x / 8 * 1.1)) && (mouseX <= (window_x / 8) * 2)) {
+                function_status = 7;
+            }
+        }
+        //8
+        if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
+            if ((mouseX >= (window_x / 8 * 2.1)) && (mouseX <= (window_x / 8) * 3.05)) {
+                function_status = 8;
+            }
+        }
+        //9
+        if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
+            if ((mouseX >= (window_x / 8 * 3.1)) && (mouseX <= (window_x / 8) * 4.05)) {
+                function_status = 9;
+            }
+        }
+        //10
+        if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
+            if ((mouseX >= (window_x / 8 * 4.1)) && (mouseX <= (window_x / 8) * 5.05)) {
+                function_status = 10;
+            }
+        }
+        //11
+        if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
+            if ((mouseX >= (window_x / 8 * 5.1)) && (mouseX <= (window_x / 8) * 6.05)) {
+                function_status = 11;
+            }
+        }
+        //12
+        if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
+            if ((mouseX >= (window_x / 8 * 6.1)) && (mouseX <= (window_x / 8) * 7.05)) {
+                function_status = 12;
+            }
+        }
+    }
 }
 
 void Q1() {
