@@ -1,5 +1,4 @@
 #include "DxLib.h"
-#include "Area.h"
 
 int function_status = 0, White;
 char KeyBuf[256];
@@ -120,6 +119,8 @@ void Opening() {
             }
         }
     }
+        
+      
 }
 
 void Q1() {
