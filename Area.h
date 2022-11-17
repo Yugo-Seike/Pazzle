@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include <math.h>
 int window_x, window_y, dx = 0;
 //プログラム内の「位置」のクラス
 //位置とサイズをウィンドウ比で計算
