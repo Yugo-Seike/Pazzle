@@ -1,22 +1,21 @@
 #include "DxLib.h"
+#include "Area.h"
 
 int function_status = 0, White;
 char KeyBuf[256];
 int Mouse = GetMouseInput();
-int window_x, window_y, color;
+int color;
 int mouseX, mouseY;
 int title,a;
 int masu;
 
-
+WindowArea* Question_Button[12];
 
 void Opening() {
     //DrawString(100, 100, "タイトル画面", White);
     
     //ChangeWindowMode(true);
     DxLib_Init();
-    int window_x, window_y, color;
-    GetScreenState(&window_x, &window_y, &color);
        
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
     title = LoadGraph("sozai/title2.png");
@@ -43,84 +42,13 @@ void Opening() {
         function_status = 1;
     }
     if (GetMouseInput() & MOUSE_INPUT_LEFT) {
-        GetMousePoint(&mouseX, &mouseY);
-        //上段
-        //1
-        if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
-            if ((mouseX >= (window_x / 8 * 1.1)) && (mouseX <= (window_x / 8) * 2)) {
-                function_status = 1;
-            }
-        }
-        //2
-        if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
-            if ((mouseX >= (window_x / 8 * 2.1)) && (mouseX <= (window_x / 8) * 3.05)) {
-                function_status = 2;
-            }
-        }
-        //3
-        if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
-            if ((mouseX >= (window_x / 8 * 3.1)) && (mouseX <= (window_x / 8) * 4.05)) {
-                function_status = 3;
-            }
-        }
-        //4
-        if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
-            if ((mouseX >= (window_x / 8 * 4.1)) && (mouseX <= (window_x / 8) * 5.05)) {
-                function_status = 4;
-            }
-        }
-        //5
-        if ((mouseY >= (window_y / 11) * 5.6) && (mouseY <= (window_y / 12) * 8.2)) {
-            if ((mouseX >= (window_x / 8 * 5.1)) && (mouseX <= (window_x / 8) * 6.05)) {
-                function_status = 5;
-            }
-        }
-        //6
-        if ((mouseY >= (window_y / 11) * 5) && (mouseY <= (window_y / 12) * 7.6)) {
-            if ((mouseX >= (window_x / 8 * 6.1)) && (mouseX <= (window_x / 8) * 7.05)) {
-                function_status = 6;
-            }
-        }
-        //下段
-        //7
-        if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
-            if ((mouseX >= (window_x / 8 * 1.1)) && (mouseX <= (window_x / 8) * 2)) {
-                function_status = 7;
-            }
-        }
-        //8
-        if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
-            if ((mouseX >= (window_x / 8 * 2.1)) && (mouseX <= (window_x / 8) * 3.05)) {
-                function_status = 8;
-            }
-        }
-        //9
-        if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
-            if ((mouseX >= (window_x / 8 * 3.1)) && (mouseX <= (window_x / 8) * 4.05)) {
-                function_status = 9;
-            }
-        }
-        //10
-        if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
-            if ((mouseX >= (window_x / 8 * 4.1)) && (mouseX <= (window_x / 8) * 5.05)) {
-                function_status = 10;
-            }
-        }
-        //11
-        if ((mouseY >= (window_y / 11) * 8.5) && (mouseY <= (window_y / 11) * 10.6)) {
-            if ((mouseX >= (window_x / 8 * 5.1)) && (mouseX <= (window_x / 8) * 6.05)) {
-                function_status = 11;
-            }
-        }
-        //12
-        if ((mouseY >= (window_y / 11) * 7.9) && (mouseY <= (window_y / 11) * 10)) {
-            if ((mouseX >= (window_x / 8 * 6.1)) && (mouseX <= (window_x / 8) * 7.05)) {
-                function_status = 12;
+        //Question_Button[0] の定義はWinMain
+        for (int i = 0; i < 12; i++) {
+            if (Question_Button[i]->mouse_in()) {
+                function_status = i+1;
             }
         }
     }
-        
-      
 }
 
 void Q1() {
@@ -226,9 +154,7 @@ void Ending() {
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     ChangeWindowMode(TRUE);  
     LPCSTR font_path = "数式フォントver1.5.ttf";        //読み込むフォントファイルのパス
-    if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) > 0) {
-    }
-    else {
+    if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) <= 0) {
         // フォント読込エラー処理
         MessageBox(NULL, "フォント読込失敗", "", MB_OK);
     }
@@ -238,7 +164,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     White = GetColor(255, 255, 255);                    //色の取得
 
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
+    GetScreenState(&window_x, &window_y, &color);
 
+    Question_Button[0]  = new WindowArea(1.1 / 8, 5.6 / 11, 0.90 / 8, 8.2 / 12 - (5.6 / 11));
+    Question_Button[1]  = new WindowArea(2.1 / 8, 5.0 / 11, 3.05 / 8 - (2.1 / 8),  7.6 / 12 - (5.0 / 11));
+    Question_Button[2]  = new WindowArea(3.1 / 8, 5.6 / 11, 4.05 / 8 - (3.1 / 8),  8.2 / 12 - (5.6 / 11));
+    Question_Button[3]  = new WindowArea(4.1 / 8, 5.0 / 11, 5.05 / 8 - (4.1 / 8),  7.6 / 12 - (5.0 / 11));
+    Question_Button[4]  = new WindowArea(5.1 / 8, 5.6 / 11, 6.05 / 8 - (5.1 / 8),  8.2 / 12 - (5.6 / 11));
+    Question_Button[5]  = new WindowArea(6.1 / 8, 5.0 / 11, 7.05 / 8 - (6.1 / 8),  7.6 / 12 - (5.0 / 11));
+    Question_Button[6]  = new WindowArea(1.1 / 8, 8.5 / 11, 2.00 / 8 - (1.1 / 8), 10.6 / 11 - (8.5 / 11));
+    Question_Button[7]  = new WindowArea(2.1 / 8, 7.9 / 11, 3.05 / 8 - (2.1 / 8), 10.0 / 11 - (7.9 / 11));
+    Question_Button[8]  = new WindowArea(3.1 / 8, 8.5 / 11, 4.05 / 8 - (3.1 / 8), 10.6 / 11 - (8.5 / 11));
+    Question_Button[9]  = new WindowArea(4.1 / 8, 7.9 / 11, 5.05 / 8 - (4.1 / 8), 10.0 / 11 - (7.9 / 11));
+    Question_Button[10] = new WindowArea(5.1 / 8, 8.5 / 11, 6.05 / 8 - (5.1 / 8), 10.6 / 11 - (8.5 / 11));
+    Question_Button[11] = new WindowArea(6.1 / 8, 7.9 / 11, 7.05 / 8 - (6.1 / 8), 10.0 / 11 - (7.9 / 11));
     while (1) {
         ClearDrawScreen();                              //裏画面のデータを全て削除
         GetHitKeyStateAll(KeyBuf);                      //すべてのキーの状態を得る
