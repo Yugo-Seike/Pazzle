@@ -201,7 +201,7 @@ void Ending() {
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    ChangeWindowMode(FALSE);  
+    ChangeWindowMode(TRUE);  
     LPCSTR font_path = "数式フォントver1.5.ttf";        //読み込むフォントファイルのパス
     if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) <= 0) {
         // フォント読込エラー処理
