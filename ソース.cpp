@@ -30,7 +30,7 @@ int title,a;
 int masu,back,sikaku,dekasikaku;
 
 WindowArea* Question_Button[12];
-
+bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]);
 void Opening() {
     //DrawString(100, 100, "タイトル画面", White);
     
@@ -54,9 +54,9 @@ void Opening() {
         }
     }
 }
-
-void Q1() {
-   
+void initPazzle(int qnum,char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]) {
+    char qnum_str[8] = "";
+    printfDx("caled!");
     back = LoadGraph("sozai/background1.png");
     DrawExtendGraph(0, 0, 1000, 580, back, FALSE);
 
@@ -66,12 +66,84 @@ void Q1() {
     dekasikaku = LoadGraph("sozai/dekasikaku.png");
     DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
 
-    DrawString(120, 60, "1問目", White);
+    sprintf_s(qnum_str, "%d%s", qnum, "問目");
 
-    if (KeyBuf[KEY_INPUT_SPACE] == 1)
-        function_status = 2;
+    DrawString(120, 60, qnum_str, White);
 
-    /*	ゲームブロック	*/
+    Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
+    char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
+    (new Area(OFFSET_X - BORDER_WIDTH,
+        OFFSET_Y - BORDER_WIDTH,
+        SIZE_OF_BLOCK_X * NUM_OF_BLOCK_X + BORDER_WIDTH,
+        SIZE_OF_BLOCK_Y * NUM_OF_BLOCK_Y + BORDER_WIDTH
+    ))->DrawBox(BORDER_COLOR, true);
+    for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
+        for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
+            GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
+            GameDrowing[y][x]->DrawBox(White, true);
+            BlockStatus[y][x] = W;
+            //if (GameBlocks[y][x] == B) {
+            //    GameDrowing[y][x]->DrawBox(Black, true);
+            //}
+            //else if (GameBlocks[y][x] == W) {			// 白ブロックを表示（削られる前）
+            //    GameDrowing[y][x]->DrawBox(White, true);
+            //}
+        }
+    }
+
+    for (int y = 0; y < NUM_OF_BLOCK_Y + 4; y++) {
+        for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
+            if (GameBlocks[y][x] != ' ') {
+                char str[1] = { GameBlocks[y][x] }; //書き出し用のメモリ領域を作成（各文字の後ろにnullをつけた領域を作成）
+                DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, &str[0], White); //strの先頭アドレスを渡す
+            }
+        }
+    }
+
+    ScreenFlip();
+    while (1) {
+        WaitKey();
+        for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
+            for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
+                // TODO: なぜかマウス入力が取得できない。
+                printfDx("%d%d", GetMouseInput(), MOUSE_INPUT_LEFT);
+                if (GetMouseInput() & MOUSE_INPUT_LEFT) {
+                    if (GameDrowing[y][x]->mouse_in()) {
+                        if (BlockStatus[y][x] == W) {
+                            GameDrowing[y][x]->DrawBox(Black, true);
+                            BlockStatus[y][x] = B;
+                        }
+                        else {
+                            GameDrowing[y][x]->DrawBox(White, true);
+                            BlockStatus[y][x] = W;
+                        }
+                    }
+                }
+            }
+        }
+        if (false) { //TODO: 答え合わせのボタンを押すと
+            if (is_correct(GameBlocks, BlockStatus)) {
+                break;
+            }
+            else {
+                //間違いの場合の処理（→再度入力待ちに）
+            }
+        }
+    }
+
+    //正解画面→メニューへ戻る処理
+
+}
+bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]) {
+    bool rtn = true;
+    for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
+        for (int y = 0; y < NUM_OF_BLOCK_X; y++) {
+            rtn &= GameBlocks[y][x] == BlockStatus[y][x];
+        }
+    }
+    return rtn;
+}
+void Q1() {
     /*	ネコ　ゲームブロック	*/
     char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT] = {
         {  W , W , W , W , B , W , W , W , W , W , B , W , W , W , W , '1','1',' ',' ',' ',' ',' ','\n' },
@@ -94,31 +166,10 @@ void Q1() {
         { ' ','1','1',' ','1',' ','1','1','1',' ','1',' ','1','1',' ','\n'                              },
         { ' ',' ','1',' ','1',' ',' ','1',' ',' ','1',' ','1',' ',' ','\n'                              },
     };
-    printf("%c", ' ');
-    Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
-    (new Area(OFFSET_X - BORDER_WIDTH,
-        OFFSET_Y - BORDER_WIDTH,
-        SIZE_OF_BLOCK_X * NUM_OF_BLOCK_X + BORDER_WIDTH,
-        SIZE_OF_BLOCK_Y * NUM_OF_BLOCK_Y + BORDER_WIDTH
-    ))->DrawBox(BORDER_COLOR, true);
-    for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
-        for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
-            GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
-            if (GameBlocks[y][x] == B) {
-                GameDrowing[y][x]->DrawBox(Black, true);
-            }
-            else if (GameBlocks[y][x] == W) {			// 白ブロックを表示（削られる前）
-                GameDrowing[y][x]->DrawBox(White, true);
-            }
-        }
-    }
+    initPazzle(1, GameBlocks);
 
-    for (int y = 0; y < NUM_OF_BLOCK_Y + NUM_OF_HINT; y++) {
-        for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
-            //std::cout << "DRAW" << GameBlocks[y][x] << "\n";
-            DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, &GameBlocks[y][x], White);
-        }
-    }
+    if (KeyBuf[KEY_INPUT_SPACE] == 1)
+        function_status = 2;
 }
 
 void Q2() {
@@ -235,9 +286,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     Question_Button[10] = new WindowArea(5.1 / 8, 8.5 / 11, 6.05 / 8 - (5.1 / 8), 10.6 / 11 - (8.5 / 11));
     Question_Button[11] = new WindowArea(6.1 / 8, 7.9 / 11, 7.05 / 8 - (6.1 / 8), 10.0 / 11 - (7.9 / 11));
     while (1) {
+        WaitKey();
         ClearDrawScreen();                              //裏画面のデータを全て削除
         GetHitKeyStateAll(KeyBuf);                      //すべてのキーの状態を得る
         SetMouseDispFlag(TRUE);
+
 
         switch (function_status) {
         case 0:
