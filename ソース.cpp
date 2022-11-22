@@ -65,9 +65,6 @@ void Q1() {
     sikaku = LoadGraph("sozai/sikaku.png");
     DrawExtendGraph(100, 50, 400, 100, sikaku, TRUE);
 
-    masu = LoadGraph("sozai/masu.png");
-    DrawExtendGraph(100, 170, 400, 470, masu, TRUE);
-
     dekasikaku = LoadGraph("sozai/dekasikaku.png");
     DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
 
@@ -98,7 +95,8 @@ void Q1() {
         { ' ','1','1',' ',' ',' ',' ','1','1',' ','7','1','1','1','1','\n'					},
     };
     printf("%c", ' ');
-
+    Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
+    (new Area(100 -1, 170 -1, 300 +1, 300 +1))->DrawBox(GetColor(57, 255, 255), true);
     for (int y = 0; y < 18; y++) {
         for (int x = 0; x < 20; x++) {
 
@@ -106,7 +104,8 @@ void Q1() {
                 break;
             }
             else if (GameBlocks[y][x] == W) {			// 白ブロックを表示（削られる前）
-                DrawString(x, y, "■", White);
+                GameDrowing[y][x] = new Area(x * 20 + 100, y * 20 + 170, 19, 19);
+                GameDrowing[y][x]->DrawBox(White, true);
             }
             else {
                 printf("%c%c", GameBlocks[y][x], ' ');	// ヒントを表示
