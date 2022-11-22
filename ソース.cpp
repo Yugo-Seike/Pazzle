@@ -1,13 +1,27 @@
 #include "DxLib.h"
 #include "Area.h"
+//#include <tchar.h>
+//#include <iostream>
 
 #define NUM_OF_BLOCK_X	15
 #define NUM_OF_BLOCK_Y	15
+
 #define NUM_OF_HINT		8
 
-#define W				1	//	白ブロック
+#define SIZE_OF_BLOCK_X 20
+#define SIZE_OF_BLOCK_Y 20
 
-int function_status = 0, White;
+#define OFFSET_X        100
+#define OFFSET_Y        100
+
+#define BORDER_WIDTH    1
+#define BORDER_COLOR    GetColor(57, 255, 255)
+
+#define W				1	//	白ブロック
+#define B				0	//	黒ブロック
+
+
+int function_status = 0, White, Black;
 char KeyBuf[256];
 int Mouse = GetMouseInput();
 int color;
@@ -26,22 +40,6 @@ void Opening() {
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, 650, 480, title, FALSE);
-
-    /*
-    DrawBox((window_x / 8 * 1.1), (window_y / 11) * 5.6, (window_x / 8) * 2, (window_y / 12) * 8.2, GetColor(200, 0, 0), false);  //1
-    DrawBox((window_x / 8 * 2.1), (window_y / 11) * 5, (window_x / 8) * 3.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //2
-    DrawBox((window_x / 8 * 3.1), (window_y / 11) * 5.6, (window_x / 8) * 4.05, (window_y / 12) * 8.2, GetColor(0, 0, 200), false);  //3
-    DrawBox((window_x / 8 * 4.1), (window_y / 11) * 5, (window_x / 8) * 5.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //4
-    DrawBox((window_x / 8 * 5.1), (window_y / 11) * 5.6, (window_x / 8) * 6.05, (window_y / 12) * 8.2, GetColor(0, 0, 200), false);  //5
-    DrawBox((window_x / 8 * 6.1), (window_y / 11) * 5, (window_x / 8) * 7.05, (window_y / 12) * 7.6, GetColor(0, 200, 0), false);  //6
-
-    DrawBox((window_x / 8 * 1.1), (window_y / 11) * 8.5, (window_x / 8) * 2, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //7
-    DrawBox((window_x / 8 * 2.1), (window_y / 11) * 7.9, (window_x / 8) * 3.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //8
-    DrawBox((window_x / 8 * 3.1), (window_y / 11) * 8.5, (window_x / 8) * 4.05, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //9
-    DrawBox((window_x / 8 * 4.1), (window_y / 11) * 7.9, (window_x / 8) * 5.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //10
-    DrawBox((window_x / 8 * 5.1), (window_y / 11) * 8.5, (window_x / 8) * 6.05, (window_y / 11) * 10.6, GetColor(200, 0, 0), false);  //11
-    DrawBox((window_x / 8 * 6.1), (window_y / 11) * 7.9, (window_x / 8) * 7.05, (window_y / 11) * 10, GetColor(200, 0, 0), false);  //12
-    */
 
     SetFontSize(32); 
     if (KeyBuf[KEY_INPUT_W] == 1) {
@@ -74,42 +72,51 @@ void Q1() {
         function_status = 2;
 
     /*	ゲームブロック	*/
+    /*	ネコ　ゲームブロック	*/
     char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT] = {
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '0',' ',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '2','2',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1','1','1','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '4','4',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1','1','1','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','4','1',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1','1','1','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
-        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
-        { '7','1','1','1','1','1','1','1','1','7','7','1','1','1','1','\n'					},
-        { ' ','1','1','5',' ',' ','5','1','1',' ','7','1','1','1','1','\n'					},
-        { ' ','1','1',' ',' ',' ',' ','1','1',' ','7','1','1','1','1','\n'					},
+        {  W , W , W , W , B , W , W , W , W , W , B , W , W , W , W , '1','1',' ',' ',' ',' ',' ','\n' },
+        {  W , W , W , B , B , W , W , W , W , B , B , B , W , W , W , '2','2',' ',' ',' ',' ',' ','\n' },
+        {  W , W , B , B , B , B , W , W , W , B , B , B , B , W , W , '4','4',' ',' ',' ',' ',' ','\n' },
+        {  W , W , B , B , B , B , B , B , B , W , B , B , B , B , W , '4','4',' ',' ',' ',' ',' ','\n' },
+        {  W , B , W , W , W , W , W , W , W , W , W , W , W , W , B , '1','3','1',' ',' ',' ',' ','\n' },
+        {  B , W , W , W , W , W , W , W , W , W , W , W , W , W , B , '1','1',' ',' ',' ',' ',' ','\n' },
+        {  B , W , W , W , B , W , W , W , W , W , B , W , W , W , B , '1','1','1','1',' ',' ',' ','\n' },
+        {  B , W , W , W , B , W , W , W , W , W , B , W , W , W , B , '1','1','1','1',' ',' ',' ','\n' },
+        {  B , W , W , W , B , W , W , W , W , W , B , W , W , W , B , '1','1','1','1',' ',' ',' ','\n' },
+        {  B , W , B , W , W , W , W , B , W , W , W , W , B , W , B , '1','1','1','1',' ',' ',' ','\n' },
+        {  W , B , W , W , W , W , W , W , W , W , W , W , W , B , W , '1','1',' ',' ',' ',' ',' ','\n' },
+        {  B , W , B , W , B , W , W , B , W , W , B , W , B , W , B , '1','1','1','1','1','1','1','\n' },
+        {  W , W , W , B , W , W , B , W , B , W , W , B , W , W , W , '1','1','1','1',' ',' ',' ','\n' },
+        {  W , W , B , W , B , W , W , W , W , W , B , W , B , W , W , '1','1','1','1',' ',' ',' ','\n' },
+        {  W , B , W , W , W , B , B , B , B , B , W , W , W , B , W , '1','5','1',' ',' ',' ',' ','\n' },
+        { '5','1','2','3','4','2','1','1','1','2','4','3','2','1','5','\n'                              },
+        { '1','1','1','1','3','1','1','1','1','1','3','1','1','1','1','\n'                              },
+        { ' ','1','1',' ','1',' ','1','1','1',' ','1',' ','1','1',' ','\n'                              },
+        { ' ',' ','1',' ','1',' ',' ','1',' ',' ','1',' ','1',' ',' ','\n'                              },
     };
     printf("%c", ' ');
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
-    (new Area(100 -1, 170 -1, 300 +1, 300 +1))->DrawBox(GetColor(57, 255, 255), true);
-    for (int y = 0; y < 18; y++) {
-        for (int x = 0; x < 20; x++) {
-
-            if (GameBlocks[y][x] == 0) {
-                break;
+    (new Area(OFFSET_X - BORDER_WIDTH,
+        OFFSET_Y - BORDER_WIDTH,
+        SIZE_OF_BLOCK_X * NUM_OF_BLOCK_X + BORDER_WIDTH,
+        SIZE_OF_BLOCK_Y * NUM_OF_BLOCK_Y + BORDER_WIDTH
+    ))->DrawBox(BORDER_COLOR, true);
+    for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
+        for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
+            GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
+            if (GameBlocks[y][x] == B) {
+                GameDrowing[y][x]->DrawBox(Black, true);
             }
             else if (GameBlocks[y][x] == W) {			// 白ブロックを表示（削られる前）
-                GameDrowing[y][x] = new Area(x * 20 + 100, y * 20 + 170, 19, 19);
                 GameDrowing[y][x]->DrawBox(White, true);
             }
-            else {
-                printf("%c%c", GameBlocks[y][x], ' ');	// ヒントを表示
-            }
+        }
+    }
+
+    for (int y = 0; y < NUM_OF_BLOCK_Y + NUM_OF_HINT; y++) {
+        for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
+            //std::cout << "DRAW" << GameBlocks[y][x] << "\n";
+            DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, &GameBlocks[y][x], White);
         }
     }
 }
@@ -210,6 +217,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
     White = GetColor(255, 255, 255);                    //色の取得
+    Black = GetColor(0, 0, 0);                          //色の取得
 
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
