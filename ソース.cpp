@@ -7,7 +7,7 @@ int Mouse = GetMouseInput();
 int color;
 int mouseX, mouseY;
 int title,a;
-int masu;
+int masu,back,sikaku,dekasikaku;
 
 WindowArea* Question_Button[12];
 
@@ -52,12 +52,20 @@ void Opening() {
 }
 
 void Q1() {
-    int back;
+   
+    back = LoadGraph("sozai/background1.png");
+    DrawExtendGraph(0, 0, 1000, 580, back, FALSE);
 
-    masu = LoadGraph("sozai/puzzle2.png");
-    DrawExtendGraph(0, 0, 650, 480, masu, FALSE);
+    sikaku = LoadGraph("sozai/sikaku.png");
+    DrawExtendGraph(100, 50, 400, 100, sikaku, TRUE);
 
-    DrawString(120, 40, "1問目", White);
+    masu = LoadGraph("sozai/masu.png");
+    DrawExtendGraph(100, 170, 400, 470, masu, TRUE);
+
+    dekasikaku = LoadGraph("sozai/dekasikaku.png");
+    DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
+
+    DrawString(120, 60, "1問目", White);
 
     if (KeyBuf[KEY_INPUT_SPACE] == 1)
         function_status = 2;
@@ -152,7 +160,7 @@ void Ending() {
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    ChangeWindowMode(TRUE);  
+    ChangeWindowMode(FALSE);  
     LPCSTR font_path = "数式フォントver1.5.ttf";        //読み込むフォントファイルのパス
     if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) <= 0) {
         // フォント読込エラー処理
