@@ -21,7 +21,7 @@ public:
 	bool mouse_in() {
 		int mouseX = 0, mouseY = 0;
 		GetMousePoint(&mouseX, &mouseY);
-		return (mouseX >= this->startX && mouseX <= this->endX && mouseY >= this->startY && mouseY <= this->endY);
+		return mouseX >= this->startX && mouseX <= this->endX && mouseY >= this->startY && mouseY <= this->endY;
 	}
 	int DrawExtendGraph(int GrHandle) {
 		return DxLib::DrawExtendGraph(this->startX, this->startY, this->endX, this->endY, GrHandle, true);
