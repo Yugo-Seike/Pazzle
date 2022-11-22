@@ -41,7 +41,6 @@ public:
 		this->endX = this->startX + (float)window_x * sizeX;
 		this->endY = this->startY + (float)window_y * sizeY;
 	}
-
 };
 class WindowArea2 : public Area {
 public:
