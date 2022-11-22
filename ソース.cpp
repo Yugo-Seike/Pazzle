@@ -1,6 +1,12 @@
 #include "DxLib.h"
 #include "Area.h"
 
+#define NUM_OF_BLOCK_X	15
+#define NUM_OF_BLOCK_Y	15
+#define NUM_OF_HINT		8
+
+#define W				1	//	白ブロック
+
 int function_status = 0, White;
 char KeyBuf[256];
 int Mouse = GetMouseInput();
@@ -70,8 +76,43 @@ void Q1() {
     if (KeyBuf[KEY_INPUT_SPACE] == 1)
         function_status = 2;
 
-    if (KeyBuf[KEY_INPUT_S] == 1)
-        function_status = 0;
+    /*	ゲームブロック	*/
+    char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT] = {
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '0',' ',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '2','2',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1','1','1','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '4','4',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1','1','1','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','4','1',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '1','1','1','1','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
+        {  W , W , W , W , W , W , W , W , W , W , W , W , W , W , W , '3','3',' ',' ','\n'	},
+        { '7','1','1','1','1','1','1','1','1','7','7','1','1','1','1','\n'					},
+        { ' ','1','1','5',' ',' ','5','1','1',' ','7','1','1','1','1','\n'					},
+        { ' ','1','1',' ',' ',' ',' ','1','1',' ','7','1','1','1','1','\n'					},
+    };
+    printf("%c", ' ');
+
+    for (int y = 0; y < 18; y++) {
+        for (int x = 0; x < 20; x++) {
+
+            if (GameBlocks[y][x] == 0) {
+                break;
+            }
+            else if (GameBlocks[y][x] == W) {			// 白ブロックを表示（削られる前）
+                DrawString(x, y, "■", White);
+            }
+            else {
+                printf("%c%c", GameBlocks[y][x], ' ');	// ヒントを表示
+            }
+        }
+    }
 }
 
 void Q2() {
