@@ -9,6 +9,9 @@
 
 #define W				1	//	白ブロック
 #define B				0	//	黒ブロック
+
+WindowArea* Question_Button[NUM_OF_QUESTION];
+
 char GameBlocks[NUM_OF_QUESTION][NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT] = {
     /*  Q1 ネコ   */
     {
@@ -81,18 +84,17 @@ char GameBlocks[NUM_OF_QUESTION][NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + 
     },
     /* ...  */
 };
-
-WindowArea* Question_Button[NUM_OF_QUESTION] = {
-    new WindowArea(1.1 / 8, 5.6 / 11, 0.90 / 8, 8.2 / 12 - (5.6 / 11)),
-    new WindowArea(2.1 / 8, 5.0 / 11, (3.05 - 2.1) / 8,  7.6 / 12 - (5.0 / 11)),
-    new WindowArea(3.1 / 8, 5.6 / 11, (4.05 - 3.1) / 8,  8.2 / 12 - (5.6 / 11)),
-    new WindowArea(4.1 / 8, 5.0 / 11, (5.05 - 4.1) / 8,  7.6 / 12 - (5.0 / 11)),
-    new WindowArea(5.1 / 8, 5.6 / 11, (6.05 - 5.1) / 8,  8.2 / 12 - (5.6 / 11)),
-    new WindowArea(6.1 / 8, 5.0 / 11, (7.05 - 6.1) / 8,  7.6 / 12 - (5.0 / 11)),
-    new WindowArea(1.1 / 8, 8.5 / 11, (2.00 - 1.1) / 8, (10.6 - 8.5) / 11),
-    new WindowArea(2.1 / 8, 7.9 / 11, (3.05 - 2.1) / 8, (10.0 - 7.9) / 11),
-    new WindowArea(3.1 / 8, 8.5 / 11, (4.05 - 3.1) / 8, (10.6 - 8.5) / 11),
-    new WindowArea(4.1 / 8, 7.9 / 11, (5.05 - 4.1) / 8, (10.0 - 7.9) / 11),
-    new WindowArea(5.1 / 8, 8.5 / 11, (6.05 - 5.1) / 8, (10.6 - 8.5) / 11),
-    new WindowArea(6.1 / 8, 7.9 / 11, (7.05 - 6.1) / 8, (10.0 - 7.9) / 11),
-};
+void setpositions() {
+    Question_Button[0] = new WindowArea(1.1 / 8, 5.6 / 11, 0.90 / 8, 8.2 / 12 - (5.6 / 11));
+    Question_Button[1] = new WindowArea(2.1 / 8, 5.0 / 11, 3.05 / 8 - (2.1 / 8), 7.6 / 12 - (5.0 / 11));
+    Question_Button[2] = new WindowArea(3.1 / 8, 5.6 / 11, 4.05 / 8 - (3.1 / 8), 8.2 / 12 - (5.6 / 11));
+    Question_Button[3] = new WindowArea(4.1 / 8, 5.0 / 11, 5.05 / 8 - (4.1 / 8), 7.6 / 12 - (5.0 / 11));
+    Question_Button[4] = new WindowArea(5.1 / 8, 5.6 / 11, 6.05 / 8 - (5.1 / 8), 8.2 / 12 - (5.6 / 11));
+    Question_Button[5] = new WindowArea(6.1 / 8, 5.0 / 11, 7.05 / 8 - (6.1 / 8), 7.6 / 12 - (5.0 / 11));
+    Question_Button[6] = new WindowArea(1.1 / 8, 8.5 / 11, 2.00 / 8 - (1.1 / 8), 10.6 / 11 - (8.5 / 11));
+    Question_Button[7] = new WindowArea(2.1 / 8, 7.9 / 11, 3.05 / 8 - (2.1 / 8), 10.0 / 11 - (7.9 / 11));
+    Question_Button[8] = new WindowArea(3.1 / 8, 8.5 / 11, 4.05 / 8 - (3.1 / 8), 10.6 / 11 - (8.5 / 11));
+    Question_Button[9] = new WindowArea(4.1 / 8, 7.9 / 11, 5.05 / 8 - (4.1 / 8), 10.0 / 11 - (7.9 / 11));
+    Question_Button[10] = new WindowArea(5.1 / 8, 8.5 / 11, 6.05 / 8 - (5.1 / 8), 10.6 / 11 - (8.5 / 11));
+    Question_Button[11] = new WindowArea(6.1 / 8, 7.9 / 11, 7.05 / 8 - (6.1 / 8), 10.0 / 11 - (7.9 / 11));
+}

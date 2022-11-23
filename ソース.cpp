@@ -30,11 +30,12 @@ bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + N
 void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]);
 int Opening();
 int Ending();
-void loadFonts();
-
+void loadFonts(LPCSTR font_path);
+void unloadFonts(LPCSTR font_path);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     int function_status = 0;
+    int qnum = 0, qidx = 0;
     LPCSTR font_path = "数式フォントver1.5.ttf";        //読み込むフォントファイルのパス
     ChangeWindowMode(TRUE);  
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
@@ -43,11 +44,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
 
+    setPositions();
+
     while (1) {
         ClearDrawScreen();                              //裏画面のデータを全て削除
         GetHitKeyStateAll(KeyBuf);                      //すべてのキーの状態を得る
         SetMouseDispFlag(TRUE);
-
 
         switch (function_status) {
             case 0:
@@ -66,8 +68,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             case 10:
             case 11:
             case 12:
-                int qnum = function_status;
-                int qidx = function_status - 1;
+                qnum = function_status;
+                qidx = function_status - 1;
                 initPazzle(qnum, GameBlocks[qidx]);
 
                 if (KeyBuf[KEY_INPUT_SPACE] == 1) function_status++;    //なんのためにしているのかわからない
@@ -186,9 +188,13 @@ int Opening() {
     if (KeyBuf[KEY_INPUT_W] == 1) {
         return 1;
     }
+    if (debug_mode) {
+        for (int i = 0; i < NUM_OF_QUESTION; i++) {
+            Question_Button[i]->DrawBox(White, false);
+        }
+    }
     if (GetMouseInput() & MOUSE_INPUT_LEFT) {
-        //Question_Button[0] の定義はWinMain
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < NUM_OF_QUESTION; i++) {
             if (Question_Button[i]->mouse_in()) {
                 return i + 1;
             }
