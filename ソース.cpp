@@ -15,8 +15,8 @@
 #define BORDER_WIDTH    1
 #define BORDER_COLOR    GetColor(57, 255, 255)
 
-#define White           GetColor(255, 255, 255)                    //色の取得
-#define Black           GetColor(0, 0, 0)                          //色の取得
+#define White           GetColor(255, 255, 255)         //色の取得
+#define Black           GetColor(0, 0, 0)               //色の取得
 
 
 char KeyBuf[256];
@@ -84,9 +84,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 break;
         }
 
-        if (ProcessMessage() == -1) break;                 //エラーが起きたら終了
+        if (ProcessMessage() == -1) break;                  //エラーが起きたら終了
 
-        ScreenFlip();                                      // 裏画面データを表画面へ反映
+        ScreenFlip();                                       // 裏画面データを表画面へ反映
         WaitKey();
     }
     unloadFonts(font_path);                                 //フォントのアンロード
@@ -125,6 +125,12 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
             GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
             GameDrowing[y][x]->DrawBox(White, true);
             BlockStatus[y][x] = W;
+            if (debug_mode) {
+                //デバッグモードでは解答を表示
+                BlockStatus[y][x] = GameBlocks[y][x];
+                if (GameBlocks[y][x] == W) GameDrowing[y][x]->DrawBox(White, true);
+                if (GameBlocks[y][x] == B) GameDrowing[y][x]->DrawBox(Black, true);
+            }
         }
     }
 
