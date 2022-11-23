@@ -43,7 +43,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     loadFonts(font_path);
     SetDrawScreen(DX_SCREEN_BACK);                      //•`‰ææ‚ğ— ‰æ–Ê‚Éİ’è
     GetScreenState(&window_x, &window_y, &color);
-
     setPositions();
 
     while (1) {
