@@ -84,7 +84,7 @@ char GameBlocks[NUM_OF_QUESTION][NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + 
     },
     /* ...  */
 };
-void setpositions() {
+void setPositions() {
     Question_Button[0] = new WindowArea(1.1 / 8, 5.6 / 11, 0.90 / 8, 8.2 / 12 - (5.6 / 11));
     Question_Button[1] = new WindowArea(2.1 / 8, 5.0 / 11, 3.05 / 8 - (2.1 / 8), 7.6 / 12 - (5.0 / 11));
     Question_Button[2] = new WindowArea(3.1 / 8, 5.6 / 11, 4.05 / 8 - (3.1 / 8), 8.2 / 12 - (5.6 / 11));
