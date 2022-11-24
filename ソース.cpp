@@ -10,7 +10,7 @@
 #define SIZE_OF_BLOCK_Y 20
 
 #define OFFSET_X        150
-#define OFFSET_Y        100
+#define OFFSET_Y        80
 
 #define BORDER_WIDTH    1
 #define BORDER_COLOR    GetColor(57, 255, 255)
@@ -23,7 +23,8 @@ char KeyBuf[256];
 int Mouse = GetMouseInput();
 int color;
 int title,a;
-int masu,back,sikaku,dekasikaku;
+int masu,back,sikaku,dekasikaku,modoru;
+
 
 
 bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]);
@@ -32,9 +33,9 @@ int Opening();
 int Ending();
 void loadFonts(LPCSTR font_path);
 void unloadFonts(LPCSTR font_path);
+int function_status = 0;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    int function_status = 0;
     int qnum = 0, qidx = 0;
     //LPCSTR font_path = "数式フォントver1.5.ttf"; 
     LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
@@ -104,7 +105,7 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     DrawExtendGraph(0, 0, 1000, 580, back, FALSE);
 
     sikaku = LoadGraph("sozai/sikaku.png");
-    DrawExtendGraph(150, 50, 450, 100, sikaku, TRUE);
+    DrawExtendGraph(150, 30, 450, 80, sikaku, TRUE);
 
     //dekasikaku = LoadGraph("sozai/dekasikaku.png");
     //DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
@@ -113,8 +114,13 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
 
     //DrawString(120, 60, qnum_str, White);
 
+    modoru = LoadGraph("sozai/戻るボタン.png");
+    DrawExtendGraph(10, 400, 150, 480, modoru, TRUE);
+    Area* modomodo = new Area(10, 400, 150, 480);
+    
+
     SetFontSize(32);
-    DrawString(150, 60, Question_name[qnum-1], White);
+    DrawString(150, 40, Question_name[qnum-1], White);
     SetFontSize(25);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
@@ -154,7 +160,10 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     while (1) {
         int blockmode = BLANK;
         WaitKey();
-        while (GetMouseInput()) {
+        if (GetMouseInput() & MOUSE_INPUT_LEFT) {
+            if (modomodo->mouse_in()) {
+                function_status = Opening();
+            }
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
