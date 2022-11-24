@@ -160,7 +160,7 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     while (1) {
         int blockmode = BLANK;
         WaitKey();
-        if (GetMouseInput() & MOUSE_INPUT_LEFT) {
+        while (GetMouseInput()) {
             if (modomodo->mouse_in()) {
                 function_status = Opening();
             }
