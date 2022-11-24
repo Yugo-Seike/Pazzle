@@ -159,6 +159,7 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
                         if (blockmode == BLANK) {
+                            //左クリック：白→黒→×を順次
                             if(GetMouseInput() & MOUSE_INPUT_LEFT)
                                 switch(BlockStatus[y][x]) {
                                 case W:
@@ -172,6 +173,7 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
                                     blockmode = W;
                                     break;
                                 }
+                            //右クリック：白→×を交互
                             if (GetMouseInput() & MOUSE_INPUT_RIGHT)
                                 switch (BlockStatus[y][x]) {
                                 case X:
