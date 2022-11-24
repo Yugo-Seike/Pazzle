@@ -150,21 +150,44 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
         }
     }
 
+    ScreenFlip();
     while (1) {
-        ScreenFlip();
+        int blockmode = BLANK;
         WaitKey();
-        if (GetMouseInput() & MOUSE_INPUT_LEFT) {
+        while (GetMouseInput()) {
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
-                        if (BlockStatus[y][x] == W) {
-                            GameDrowing[y][x]->DrawBox(Black, true);
-                            BlockStatus[y][x] = B;
+                        if (blockmode == BLANK) {
+                            if(GetMouseInput() & MOUSE_INPUT_LEFT)
+                                switch(BlockStatus[y][x]) {
+                                case W:
+                                    blockmode = B;
+                                    break;
+                                case B:
+                                    blockmode = X;
+                                    break;
+                                case X:
+                                default:
+                                    blockmode = W;
+                                    break;
+                                }
+                            if (GetMouseInput() & MOUSE_INPUT_RIGHT)
+                                switch (BlockStatus[y][x]) {
+                                case X:
+                                    blockmode = W;
+                                    break;
+                                case W:
+                                case B:
+                                default:
+                                    blockmode = X;
+                                    break;
+                                }
                         }
-                        else {
-                            GameDrowing[y][x]->DrawBox(White, true);
-                            BlockStatus[y][x] = W;
-                        }
+                        GameDrowing[y][x]->DrawBox(blockmode == W ? White : Black, true);
+                        if (blockmode == X) GameDrowing[y][x]->DrawX(White);
+                        BlockStatus[y][x] = blockmode;
+                        ScreenFlip();
                     }
                 }
             }

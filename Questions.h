@@ -7,8 +7,10 @@
 #define NUM_OF_QUESTION 12
 #define NUM_OF_HINT		8
 
-#define W				1	//	白ブロック
-#define B				0	//	黒ブロック
+#define BLANK			0
+#define B				1	//	黒ブロック
+#define W				2	//	白ブロック
+#define X				9	//	×ブロック
 
 WindowArea* Question_Button[NUM_OF_QUESTION];
 

@@ -32,6 +32,9 @@ public:
 	int DrawBox(unsigned int color, int fillflg) {
 		return DxLib::DrawBox(this->startX, this->startY, this->endX, this->endY, color, fillflg);
 	}
+	int DrawX(unsigned int color) {
+		return DxLib::DrawLine(this->startX, this->startY, this->endX, this->endY, color) || DxLib::DrawLine(this->startX, this->endY, this->endX, this->startY, color);
+	}
 };
 class WindowArea : public Area {
 public:
