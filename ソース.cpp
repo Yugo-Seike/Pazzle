@@ -4,7 +4,7 @@
 //#include <tchar.h>
 //#include <iostream>
 
-#define debug_mode 1
+#define debug_mode 0
 
 #define SIZE_OF_BLOCK_X 20
 #define SIZE_OF_BLOCK_Y 20
@@ -104,8 +104,8 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     sikaku = LoadGraph("sozai/sikaku.png");
     DrawExtendGraph(100, 50, 400, 100, sikaku, TRUE);
 
-    dekasikaku = LoadGraph("sozai/dekasikaku.png");
-    DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
+    //dekasikaku = LoadGraph("sozai/dekasikaku.png");
+    //DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
 
     sprintf_s(qnum_str, "%d%s", qnum, "–â–Ú");
 
