@@ -39,6 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     int qnum = 0, qidx = 0;
     //LPCSTR font_path = "数式フォントver1.5.ttf"; 
     LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
+    DxLib_Init();
     ChangeWindowMode(TRUE);  
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
@@ -90,7 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (ProcessMessage() == -1) break;                  //エラーが起きたら終了
 
         ScreenFlip();                                       // 裏画面データを表画面へ反映
-        WaitKey();
+        //WaitKey();
     }
     unloadFonts(font_path);                                 //フォントのアンロード
     
@@ -161,9 +162,6 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
         int blockmode = BLANK;
         WaitKey();
         while (GetMouseInput()) {
-            if (modomodo->mouse_in()) {
-                function_status = Opening();
-            }
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
@@ -202,14 +200,18 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
                     }
                 }
             }
-        }
-        if (false) { //TODO: 答え合わせのボタンを押すと
-            if (is_correct(GameBlocks, BlockStatus)) {
-                break;
+            if (modomodo->mouse_in()) {
+                function_status = 0;
+                return;
             }
-            else {
-                //TODO: 間違いの場合の処理（→再度入力待ちに）
-                if (debug_mode) printfDx("incorrect!");
+            if (false) { //TODO: 答え合わせのボタンを押すと
+                if (is_correct(GameBlocks, BlockStatus)) {
+                    break;
+                }
+                else {
+                    //TODO: 間違いの場合の処理（→再度入力待ちに）
+                    if (debug_mode) printfDx("incorrect!");
+                }
             }
         }
     }
@@ -223,7 +225,6 @@ int Opening() {
     //DrawString(100, 100, "タイトル画面", White);
 
     //ChangeWindowMode(true);
-    DxLib_Init();
 
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
     title = LoadGraph("sozai/title2.png");
@@ -238,6 +239,8 @@ int Opening() {
             Question_Button[i]->DrawBox(White, false);
         }
     }
+    ScreenFlip();
+    WaitKey();
     if (GetMouseInput() & MOUSE_INPUT_LEFT) {
         for (int i = 0; i < NUM_OF_QUESTION; i++) {
             if (Question_Button[i]->mouse_in()) {
