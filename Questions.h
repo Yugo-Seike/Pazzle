@@ -295,8 +295,7 @@ void setPositions() {
     Question_Button[9] = new WindowArea(4.1 / 8, 7.9 / 11, 5.05 / 8 - (4.1 / 8), 10.0 / 11 - (7.9 / 11));
     Question_Button[10] = new WindowArea(5.1 / 8, 8.5 / 11, 6.05 / 8 - (5.1 / 8), 10.6 / 11 - (8.5 / 11));
     Question_Button[11] = new WindowArea(6.1 / 8, 7.9 / 11, 7.05 / 8 - (6.1 / 8), 10.0 / 11 - (7.9 / 11));
-    modomodo = new ConstArea(10, 400, 150, 480);
-}
+    }
 
 const char* Question_name[NUM_OF_QUESTION] = {
      "ñÇèóÇÃÇ®ãü"

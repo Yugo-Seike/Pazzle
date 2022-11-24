@@ -116,12 +116,8 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
 
     modoru = LoadGraph("sozai/–ß‚éƒ{ƒ^ƒ“.png");
     DrawExtendGraph(10, 400, 150, 480, modoru, TRUE);
-    Area* modomodo = new ConstArea(10, 400, 150, 480);
-    if (GetMouseInput() & MOUSE_INPUT_LEFT) {
-        if (modomodo->mouse_in()) {
-            function_status = Opening();
-        }
-    }
+    Area* modomodo = new Area(10, 400, 150, 480);
+    
 
     SetFontSize(32);
     DrawString(150, 40, Question_name[qnum-1], White);
@@ -164,6 +160,9 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
         ScreenFlip();
         WaitKey();
         if (GetMouseInput() & MOUSE_INPUT_LEFT) {
+            if (modomodo->mouse_in()) {
+                function_status = Opening();
+            }
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
