@@ -9,7 +9,7 @@
 #define SIZE_OF_BLOCK_X 20
 #define SIZE_OF_BLOCK_Y 20
 
-#define OFFSET_X        100
+#define OFFSET_X        150
 #define OFFSET_Y        100
 
 #define BORDER_WIDTH    1
@@ -103,7 +103,7 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     DrawExtendGraph(0, 0, 1000, 580, back, FALSE);
 
     sikaku = LoadGraph("sozai/sikaku.png");
-    DrawExtendGraph(100, 50, 400, 100, sikaku, TRUE);
+    DrawExtendGraph(150, 50, 450, 100, sikaku, TRUE);
 
     //dekasikaku = LoadGraph("sozai/dekasikaku.png");
     //DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);

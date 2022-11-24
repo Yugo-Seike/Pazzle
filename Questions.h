@@ -296,7 +296,7 @@ void setPositions() {
     Question_Button[11] = new WindowArea(6.1 / 8, 7.9 / 11, 7.05 / 8 - (6.1 / 8), 10.0 / 11 - (7.9 / 11));
 }
 
-const char* Question[NUM_OF_QUESTION] = {
+const char* Question_name[NUM_OF_QUESTION] = {
      "ñÇèóÇÃÇ®ãü"
      ,"ÇTÇ‹Ç≈Ç†ÇËÇ‹Ç∑"
     ,"ãtÇ≥Ç…Ç∑ÇÈÇ∆åyÇ¢"
