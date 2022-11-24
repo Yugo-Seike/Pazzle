@@ -36,12 +36,13 @@ void unloadFonts(LPCSTR font_path);
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     int function_status = 0;
     int qnum = 0, qidx = 0;
-    LPCSTR font_path = "数式フォントver1.5.ttf";        //読み込むフォントファイルのパス
+    //LPCSTR font_path = "数式フォントver1.5.ttf"; 
+    LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
     ChangeWindowMode(TRUE);  
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
     loadFonts(font_path);
-    ChangeFont("数式フォント", DX_CHARSET_DEFAULT);
+    ChangeFont("なごみ極細ゴシック ExtraLight", DX_CHARSET_DEFAULT);
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
     setPositions();
@@ -108,9 +109,13 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     //dekasikaku = LoadGraph("sozai/dekasikaku.png");
     //DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
 
-    sprintf_s(qnum_str, "%d%s", qnum, "問目");
+    //sprintf_s(qnum_str, "%d%s", qnum, "問目");
 
-    DrawString(120, 60, qnum_str, White);
+    //DrawString(120, 60, qnum_str, White);
+
+    SetFontSize(32);
+    DrawString(150, 60, Question_name[qnum-1], White);
+    SetFontSize(25);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
     char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
@@ -190,7 +195,7 @@ int Opening() {
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, 650, 480, title, FALSE);
 
-    SetFontSize(32);
+    
     if (KeyBuf[KEY_INPUT_W] == 1) {
         return 1;
     }
