@@ -91,7 +91,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (ProcessMessage() == -1) break;                  //エラーが起きたら終了
 
         ScreenFlip();                                       // 裏画面データを表画面へ反映
-        //WaitKey();
     }
     unloadFonts(font_path);                                 //フォントのアンロード
     
