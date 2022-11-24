@@ -41,6 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
     loadFonts(font_path);
+    ChangeFont("数式フォント", DX_CHARSET_DEFAULT);
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
     setPositions();
@@ -215,7 +216,6 @@ int Ending() {
 void loadFonts(LPCSTR font_path) {
     // フォント読込エラー処理
     if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) <= 0) MessageBox(NULL, "フォント読込失敗", "", MB_OK);
-    ChangeFont("数式フォント", DX_CHARSET_DEFAULT);
 }
 
 void unloadFonts(LPCSTR font_path) {
