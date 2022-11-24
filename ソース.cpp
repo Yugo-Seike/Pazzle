@@ -144,7 +144,7 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     for (int y = 0; y < NUM_OF_BLOCK_Y + 4; y++) {
         for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
             if (GameBlocks[y][x] != ' ') {
-                char str[1] = { GameBlocks[y][x] }; //書き出し用のメモリ領域を作成（各文字の後ろにnullをつけた領域を作成）
+                char str[] = { GameBlocks[y][x], '\0'}; //書き出し用のメモリ領域を作成（各文字の後ろにnullをつけた領域を作成）
                 DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, &str[0], White); //strの先頭アドレスを渡す
             }
         }
