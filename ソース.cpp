@@ -75,7 +75,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 qidx = function_status - 1;
                 initPazzle(qnum, GameBlocks[qidx]);
 
-                if (KeyBuf[KEY_INPUT_SPACE] == 1) function_status++;    //‚È‚ñ‚Ì‚½‚ß‚É‚µ‚Ä‚¢‚é‚Ì‚©‚í‚©‚ç‚È‚¢
                 break;
 
             case 13:
@@ -229,10 +228,6 @@ int Opening() {
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, 650, 480, title, FALSE);
 
-    
-    if (KeyBuf[KEY_INPUT_W] == 1) {
-        return 1;
-    }
     if (debug_mode) {
         for (int i = 0; i < NUM_OF_QUESTION; i++) {
             Question_Button[i]->DrawBox(White, false);
