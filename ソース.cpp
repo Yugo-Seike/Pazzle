@@ -4,7 +4,7 @@
 //#include <tchar.h>
 //#include <iostream>
 
-#define debug_mode 0
+#define debug_mode 1
 
 #define SIZE_OF_BLOCK_X 20
 #define SIZE_OF_BLOCK_Y 20
