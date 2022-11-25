@@ -27,6 +27,7 @@ int Mouse = GetMouseInput();
 int color;
 int title,a;
 int masu,back,sikaku,dekasikaku,modoru,susumu,clear,failed;
+int music[13];
 
 
 
@@ -49,6 +50,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     loadFonts(font_path);
     ChangeFont("なごみ極細ゴシック ExtraLight", DX_CHARSET_DEFAULT);
+
+    music[0] = LoadSoundMem("music/ロビー.mp3");
+
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
     setPositions();
@@ -103,6 +107,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]) {
     char qnum_str[8] = "";
+    
     if (debug_mode) printfDx("called!");
     back = LoadGraph("sozai/background1.png");
     DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
@@ -239,6 +244,7 @@ int Opening() {
     //ChangeWindowMode(true);
 
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
+    PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
 
