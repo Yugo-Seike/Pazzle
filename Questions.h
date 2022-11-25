@@ -15,7 +15,7 @@
 WindowArea* Question_Button[NUM_OF_QUESTION];
 ConstArea* modomodo;
 
-char* GameBlocks[NUM_OF_QUESTION][NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT] = {
+const char* GameBlocks[NUM_OF_QUESTION][NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT] = {
     /*  Q1 ネコ   デバッグ済み*/
     {
         {  W , W , W , W , B , W , W , W , W , W , B , W , W , W , W , "1" ,"1"," "," "," "," "," ","\n" },
