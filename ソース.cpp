@@ -1,13 +1,14 @@
 #include "DxLib.h"
 #include "Area.h"
 #include "Questions.h"
+//#include <string.h>
 //#include <tchar.h>
 //#include <iostream>
 
 #define debug_mode 1
 
-#define SIZE_OF_BLOCK_X 20
-#define SIZE_OF_BLOCK_Y 20
+#define SIZE_OF_BLOCK_X 45
+#define SIZE_OF_BLOCK_Y 45
 
 #define OFFSET_X        150
 #define OFFSET_Y        80
@@ -15,8 +16,10 @@
 #define BORDER_WIDTH    1
 #define BORDER_COLOR    GetColor(57, 255, 255)
 
-#define White           GetColor(255, 255, 255)         //F‚Ìæ“¾
-#define Black           GetColor(0, 0, 0)               //F‚Ìæ“¾
+#define White           GetColor(255, 255, 255)         //è‰²ã®å–å¾—
+#define Black           GetColor(0, 0, 0)               //è‰²ã®å–å¾—
+
+#define CHAR_BUF        4
 
 
 char KeyBuf[256];
@@ -27,8 +30,8 @@ int masu,back,sikaku,dekasikaku,modoru;
 
 
 
-bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]);
-void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]);
+bool is_correct(const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF]);
+void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]);
 int Opening();
 int Ending();
 void loadFonts(LPCSTR font_path);
@@ -37,21 +40,22 @@ int function_status = 0;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     int qnum = 0, qidx = 0;
-    //LPCSTR font_path = "”®ƒtƒHƒ“ƒgver1.5.ttf"; 
-    LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //“Ç‚İ‚ŞƒtƒHƒ“ƒgƒtƒ@ƒCƒ‹‚ÌƒpƒX
+    //LPCSTR font_path = "æ•°å¼ãƒ•ã‚©ãƒ³ãƒˆver1.5.ttf"; 
+    LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //èª­ã¿è¾¼ã‚€ãƒ•ã‚©ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹
     DxLib_Init();
-    ChangeWindowMode(TRUE);  
-    if (DxLib_Init() == -1) return -1;                  //‚c‚wƒ‰ƒCƒuƒ‰ƒŠ‰Šú‰»ˆ— ƒGƒ‰[‚ª‹N‚«‚½‚çI—¹ 
+    SetGraphMode(1280, 1024, 32);
+    ChangeWindowMode(TRUE);
+    if (DxLib_Init() == -1) return -1;                  //ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªåˆæœŸåŒ–å‡¦ç† ã‚¨ãƒ©ãƒ¼ãŒèµ·ããŸã‚‰çµ‚äº† 
 
     loadFonts(font_path);
-    ChangeFont("‚È‚²‚İ‹É×ƒSƒVƒbƒN ExtraLight", DX_CHARSET_DEFAULT);
-    SetDrawScreen(DX_SCREEN_BACK);                      //•`‰ææ‚ğ— ‰æ–Ê‚Éİ’è
+    ChangeFont("ãªã”ã¿æ¥µç´°ã‚´ã‚·ãƒƒã‚¯ ExtraLight", DX_CHARSET_DEFAULT);
+    SetDrawScreen(DX_SCREEN_BACK);                      //æç”»å…ˆã‚’è£ç”»é¢ã«è¨­å®š
     GetScreenState(&window_x, &window_y, &color);
     setPositions();
 
     while (1) {
-        ClearDrawScreen();                              //— ‰æ–Ê‚Ìƒf[ƒ^‚ğ‘S‚Äíœ
-        GetHitKeyStateAll(KeyBuf);                      //‚·‚×‚Ä‚ÌƒL[‚Ìó‘Ô‚ğ“¾‚é
+        ClearDrawScreen();                              //è£ç”»é¢ã®ãƒ‡ãƒ¼ã‚¿ã‚’å…¨ã¦å‰Šé™¤
+        GetHitKeyStateAll(KeyBuf);                      //ã™ã¹ã¦ã®ã‚­ãƒ¼ã®çŠ¶æ…‹ã‚’å¾—ã‚‹
         SetMouseDispFlag(TRUE);
 
         switch (function_status) {
@@ -75,6 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 qidx = function_status - 1;
                 initPazzle(qnum, GameBlocks[qidx]);
 
+                if (KeyBuf[KEY_INPUT_SPACE] == 1) function_status++;    //ãªã‚“ã®ãŸã‚ã«ã—ã¦ã„ã‚‹ã®ã‹ã‚ã‹ã‚‰ãªã„
                 break;
 
             case 13:
@@ -82,26 +87,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 break;
 
             default:
-                DxLib_End();                                // ‚c‚wƒ‰ƒCƒuƒ‰ƒŠg—p‚ÌI—¹ˆ—
+                DxLib_End();                                // ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªä½¿ç”¨ã®çµ‚äº†å‡¦ç†
                 return 0;
                 break;
         }
 
-        if (ProcessMessage() == -1) break;                  //ƒGƒ‰[‚ª‹N‚«‚½‚çI—¹
+        if (ProcessMessage() == -1) break;                  //ã‚¨ãƒ©ãƒ¼ãŒèµ·ããŸã‚‰çµ‚äº†
 
-        ScreenFlip();                                       // — ‰æ–Êƒf[ƒ^‚ğ•\‰æ–Ê‚Ö”½‰f
+        ScreenFlip();                                       // è£ç”»é¢ãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç”»é¢ã¸åæ˜ 
     }
-    unloadFonts(font_path);                                 //ƒtƒHƒ“ƒg‚ÌƒAƒ“ƒ[ƒh
+    unloadFonts(font_path);                                 //ãƒ•ã‚©ãƒ³ãƒˆã®ã‚¢ãƒ³ãƒ­ãƒ¼ãƒ‰
     
-    DxLib_End();                                            // ‚c‚wƒ‰ƒCƒuƒ‰ƒŠg—p‚ÌI—¹ˆ—
-    return 0;                                               // ƒ\ƒtƒg‚ÌI—¹
+    DxLib_End();                                            // ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªä½¿ç”¨ã®çµ‚äº†å‡¦ç†
+    return 0;                                               // ã‚½ãƒ•ãƒˆã®çµ‚äº†
 }
 
-void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]) {
+void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]) {
     char qnum_str[8] = "";
     if (debug_mode) printfDx("called!");
     back = LoadGraph("sozai/background1.png");
-    DrawExtendGraph(0, 0, 1000, 580, back, FALSE);
+    DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
 
     sikaku = LoadGraph("sozai/sikaku.png");
     DrawExtendGraph(150, 30, 450, 80, sikaku, TRUE);
@@ -109,91 +114,89 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     //dekasikaku = LoadGraph("sozai/dekasikaku.png");
     //DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
 
-    //sprintf_s(qnum_str, "%d%s", qnum, "–â–Ú");
+    //sprintf_s(qnum_str, "%d%s", qnum, "å•ç›®");
 
     //DrawString(120, 60, qnum_str, White);
 
-    modoru = LoadGraph("sozai/–ß‚éƒ{ƒ^ƒ“.png");
+    modoru = LoadGraph("sozai/æˆ»ã‚‹ãƒœã‚¿ãƒ³.png");
     DrawExtendGraph(10, 400, 150, 480, modoru, TRUE);
     Area* modomodo = new Area(10, 400, 150, 480);
     
 
     SetFontSize(32);
     DrawString(150, 40, Question_name[qnum-1], White);
-    SetFontSize(20);
+    SetFontSize(25);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
-    char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
+    char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF];
     (new Area(OFFSET_X - BORDER_WIDTH,
         OFFSET_Y - BORDER_WIDTH,
         SIZE_OF_BLOCK_X * NUM_OF_BLOCK_X + BORDER_WIDTH,
         SIZE_OF_BLOCK_Y * NUM_OF_BLOCK_Y + BORDER_WIDTH
     ))->DrawBox(BORDER_COLOR, true);
 
-    //ŠeƒuƒƒbƒN‚ğì¬
+    //å„ãƒ–ãƒ­ãƒƒã‚¯ã‚’ä½œæˆ
     for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
         for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
             GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
             GameDrowing[y][x]->DrawBox(White, true);
-            BlockStatus[y][x] = W;
+            strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), W);
             if (debug_mode) {
-                //ƒfƒoƒbƒOƒ‚[ƒh‚Å‚Í‰ğ“š‚ğ•\¦
-                BlockStatus[y][x] = GameBlocks[y][x];
+                //ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰ã§ã¯è§£ç­”ã‚’è¡¨ç¤º
+                strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), GameBlocks[y][x]);
                 if (GameBlocks[y][x] == W) GameDrowing[y][x]->DrawBox(White, true);
                 if (GameBlocks[y][x] == B) GameDrowing[y][x]->DrawBox(Black, true);
             }
         }
     }
 
-    //ƒqƒ“ƒg‚Ì•\¦
+    //ãƒ’ãƒ³ãƒˆã®è¡¨ç¤º
     for (int y = 0; y < NUM_OF_BLOCK_Y + 4; y++) {
         for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
-            if (GameBlocks[y][x] != ' ') {
-                char str[] = { GameBlocks[y][x], '\0'}; //‘‚«o‚µ—p‚Ìƒƒ‚ƒŠ—Ìˆæ‚ğì¬iŠe•¶š‚ÌŒã‚ë‚Énull‚ğ‚Â‚¯‚½—Ìˆæ‚ğì¬j
-                DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, str, White); //str‚Ìæ“ªƒAƒhƒŒƒX‚ğ“n‚·
+            if (strcmp(GameBlocks[y][x], " ") != 0) {
+                DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, GameBlocks[y][x], White);
             }
         }
     }
 
     ScreenFlip();
     while (1) {
-        int blockmode = BLANK;
+        char blockmode[CHAR_BUF] = BLANK;
         WaitKey();
         while (GetMouseInput()) {
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
-                        if (blockmode == BLANK) {
-                            //¶ƒNƒŠƒbƒNF”’¨•¨~‚ğ‡Ÿ
-                            if(GetMouseInput() & MOUSE_INPUT_LEFT)
-                                switch(BlockStatus[y][x]) {
-                                case W:
-                                    blockmode = B;
-                                    break;
-                                case B:
-                                    blockmode = X;
-                                    break;
-                                case X:
-                                default:
-                                    blockmode = W;
-                                    break;
+                        //ã‚¯ãƒªãƒƒã‚¯æ™‚ã®æŒ™å‹•ãŒå¤‰ã€‚è¦ãƒ‡ãƒãƒƒã‚°
+                        if (strcmp(blockmode, BLANK) == 0) {
+                            //å·¦ã‚¯ãƒªãƒƒã‚¯ï¼šç™½â†’é»’â†’Ã—ã‚’é †æ¬¡
+                            if(GetMouseInput() & MOUSE_INPUT_LEFT){
+                                if (strcmp(BlockStatus[y][x], W) == 0) {
+                                    strcpy_s(blockmode, sizeof(blockmode), B);
                                 }
-                            //‰EƒNƒŠƒbƒNF”’¨~‚ğŒğŒİ
-                            if (GetMouseInput() & MOUSE_INPUT_RIGHT)
-                                switch (BlockStatus[y][x]) {
-                                case X:
-                                    blockmode = W;
-                                    break;
-                                case W:
-                                case B:
-                                default:
-                                    blockmode = X;
-                                    break;
+                                else if (strcmp(BlockStatus[y][x], B) == 0) {
+                                    strcpy_s(blockmode, sizeof(blockmode), X);
                                 }
+                                else {
+                                    strcpy_s(blockmode, sizeof(blockmode), W);
+                                }
+                            }
+                            //å³ã‚¯ãƒªãƒƒã‚¯ï¼šç™½â†’Ã—ã‚’äº¤äº’
+                            if (GetMouseInput() & MOUSE_INPUT_RIGHT){
+                                if (strcmp(BlockStatus[y][x], X) == 0) {
+                                    strcpy_s(blockmode, sizeof(blockmode), W);
+                                }
+                                else {
+                                    strcpy_s(blockmode, sizeof(blockmode), X);
+                                }
+                            }
                         }
-                        GameDrowing[y][x]->DrawBox(blockmode == W ? White : Black, true);
-                        if (blockmode == X) GameDrowing[y][x]->DrawX(White);
-                        BlockStatus[y][x] = blockmode;
+                        //success / failedç”»é¢ã®è¡¨ç¤ºå¾Œã¯ã€ä¸‹ã®ã€ã€Œã“ã“ã‹ã‚‰ã€ï½ã€Œã“ã“ã¾ã§ã€ã‚’ã€xã¨yã®ãƒ«ãƒ¼ãƒ—å†…ã§å›ã™ã€‘ã¨ã„ã†å‡¦ç†ã‚’ã€ä¸€å›ã ã‘
+                        /* ã“ã“ã‹ã‚‰ */
+                        GameDrowing[y][x]->DrawBox(strcmp(blockmode, W) == 0 ? White : Black, true);
+                        if (strcmp(blockmode, X) == 0) GameDrowing[y][x]->DrawX(White);
+                        strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), blockmode);
+                        /* ã“ã“ã¾ã§ */
                         ScreenFlip();
                     }
                 }
@@ -202,12 +205,12 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
                 function_status = 0;
                 return;
             }
-            if (false) { //TODO: “š‚¦‡‚í‚¹‚Ìƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚Æ
+            if (false) { //TODO: ç­”ãˆåˆã‚ã›ã®ãƒœã‚¿ãƒ³ã‚’æŠ¼ã™ã¨
                 if (is_correct(GameBlocks, BlockStatus)) {
                     break;
                 }
                 else {
-                    //TODO: ŠÔˆá‚¢‚Ìê‡‚Ìˆ—i¨Ä“x“ü—Í‘Ò‚¿‚Éj
+                    //TODO: é–“é•ã„ã®å ´åˆã®å‡¦ç†ï¼ˆâ†’å†åº¦å…¥åŠ›å¾…ã¡ã«ï¼‰
                     if (debug_mode) printfDx("incorrect!");
                 }
             }
@@ -215,19 +218,23 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     }
 
     if (debug_mode) printfDx("correct!");
-    //TODO: ³‰ğ‰æ–Ê¨ƒƒjƒ…[‚Ö–ß‚éˆ—
+    //TODO: æ­£è§£ç”»é¢â†’ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¸æˆ»ã‚‹å‡¦ç†
 
 }
 
 int Opening() {
-    //DrawString(100, 100, "ƒ^ƒCƒgƒ‹‰æ–Ê", White);
+    //DrawString(100, 100, "ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢", White);
 
     //ChangeWindowMode(true);
 
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
     title = LoadGraph("sozai/title2.png");
-    DrawExtendGraph(0, 0, 650, 480, title, FALSE);
+    DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
 
+    
+    if (KeyBuf[KEY_INPUT_W] == 1) {
+        return 1;
+    }
     if (debug_mode) {
         for (int i = 0; i < NUM_OF_QUESTION; i++) {
             Question_Button[i]->DrawBox(White, false);
@@ -250,19 +257,19 @@ int Ending() {
 }
 
 void loadFonts(LPCSTR font_path) {
-    // ƒtƒHƒ“ƒg“ÇƒGƒ‰[ˆ—
-    if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) <= 0) MessageBox(NULL, "ƒtƒHƒ“ƒg“Ç¸”s", "", MB_OK);
+    // ãƒ•ã‚©ãƒ³ãƒˆèª­è¾¼ã‚¨ãƒ©ãƒ¼å‡¦ç†
+    if (AddFontResourceEx(font_path, FR_PRIVATE, NULL) <= 0) MessageBox(NULL, "ãƒ•ã‚©ãƒ³ãƒˆèª­è¾¼å¤±æ•—", "", MB_OK);
 }
 
 void unloadFonts(LPCSTR font_path) {
     if (!RemoveFontResourceEx(font_path, FR_PRIVATE, NULL)) MessageBox(NULL, "remove failure", "", MB_OK);
 }
 
-bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]) {
+bool is_correct(const char *GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF]) {
     bool rtn = true;
     for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
         for (int y = 0; y < NUM_OF_BLOCK_X; y++) {
-            rtn &= GameBlocks[y][x] == BlockStatus[y][x];
+            rtn &= (strcmp(GameBlocks[y][x], BlockStatus[y][x]) == 0);
         }
     }
     return rtn;
