@@ -1,16 +1,17 @@
 #include "DxLib.h"
 #include "Area.h"
 #include "Questions.h"
+//#include <string.h>
 //#include <tchar.h>
 //#include <iostream>
 
-#define debug_mode 0
+#define debug_mode 1
 
-#define SIZE_OF_BLOCK_X 20
-#define SIZE_OF_BLOCK_Y 20
+#define SIZE_OF_BLOCK_X 45
+#define SIZE_OF_BLOCK_Y 45
 
-#define OFFSET_X        150
-#define OFFSET_Y        80
+#define OFFSET_X        300
+#define OFFSET_Y        100
 
 #define BORDER_WIDTH    1
 #define BORDER_COLOR    GetColor(57, 255, 255)
@@ -18,17 +19,20 @@
 #define White           GetColor(255, 255, 255)         //色の取得
 #define Black           GetColor(0, 0, 0)               //色の取得
 
+#define CHAR_BUF        4
+
 
 char KeyBuf[256];
 int Mouse = GetMouseInput();
 int color;
 int title,a;
-int masu,back,sikaku,dekasikaku,modoru;
+int masu,back,sikaku,dekasikaku,modoru,susumu,clear,failed;
+int music[13];
 
 
 
-bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]);
-void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]);
+bool is_correct(const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF]);
+void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]);
 int Opening();
 int Ending();
 void loadFonts(LPCSTR font_path);
@@ -40,11 +44,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //LPCSTR font_path = "数式フォントver1.5.ttf"; 
     LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
     DxLib_Init();
-    ChangeWindowMode(TRUE);  
+    SetGraphMode(1280, 1024, 32);
+    ChangeWindowMode(FALSE);
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
     loadFonts(font_path);
     ChangeFont("なごみ極細ゴシック ExtraLight", DX_CHARSET_DEFAULT);
+
+    music[0] = LoadSoundMem("music/ロビー.mp3");
+
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
     setPositions();
@@ -97,14 +105,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     return 0;                                               // ソフトの終了
 }
 
-void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]) {
+void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]) {
     char qnum_str[8] = "";
+    
     if (debug_mode) printfDx("called!");
     back = LoadGraph("sozai/background1.png");
-    DrawExtendGraph(0, 0, 1000, 580, back, FALSE);
+    DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
 
     sikaku = LoadGraph("sozai/sikaku.png");
-    DrawExtendGraph(150, 30, 450, 80, sikaku, TRUE);
+    DrawExtendGraph(300, 30, 970, 200, sikaku, TRUE);
 
     //dekasikaku = LoadGraph("sozai/dekasikaku.png");
     //DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
@@ -114,16 +123,20 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     //DrawString(120, 60, qnum_str, White);
 
     modoru = LoadGraph("sozai/戻るボタン.png");
-    DrawExtendGraph(10, 400, 150, 480, modoru, TRUE);
-    Area* modomodo = new Area(10, 400, 150, 480);
+    DrawExtendGraph(10, 850, 250, 1000, modoru, TRUE);
+    Area* modomodo = new Area(10, 850, 250, 1000);
+
+    susumu = LoadGraph("sozai/判定.png");
+    DrawExtendGraph(1000, 830, 1240, 1000, susumu, TRUE);
+    Area* susumuzo = new Area(1000, 830, 1280, 1000);
     
 
-    SetFontSize(32);
-    DrawString(150, 40, Question_name[qnum-1], White);
-    SetFontSize(25);
+    SetFontSize(34);
+    DrawString(300, 40, Question_name[qnum-1], White);
+    SetFontSize(28);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
-    char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
+    char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF];
     (new Area(OFFSET_X - BORDER_WIDTH,
         OFFSET_Y - BORDER_WIDTH,
         SIZE_OF_BLOCK_X * NUM_OF_BLOCK_X + BORDER_WIDTH,
@@ -135,12 +148,12 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
         for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
             GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
             GameDrowing[y][x]->DrawBox(White, true);
-            BlockStatus[y][x] = W;
+            strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), W);
             if (debug_mode) {
                 //デバッグモードでは解答を表示
-                BlockStatus[y][x] = GameBlocks[y][x];
-                if (GameBlocks[y][x] == W) GameDrowing[y][x]->DrawBox(White, true);
-                if (GameBlocks[y][x] == B) GameDrowing[y][x]->DrawBox(Black, true);
+                strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), GameBlocks[y][x]);
+                if (strcmp(GameBlocks[y][x], W) == 0) GameDrowing[y][x]->DrawBox(White, true);
+                if (strcmp(GameBlocks[y][x], B) == 0) GameDrowing[y][x]->DrawBox(Black, true);
             }
         }
     }
@@ -148,52 +161,49 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
     //ヒントの表示
     for (int y = 0; y < NUM_OF_BLOCK_Y + 4; y++) {
         for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
-            if (GameBlocks[y][x] != ' ') {
-                char str[] = { GameBlocks[y][x], '\0'}; //書き出し用のメモリ領域を作成（各文字の後ろにnullをつけた領域を作成）
-                DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, str, White); //strの先頭アドレスを渡す
+            if (GameBlocks[y][x] != nullptr && strcmp(GameBlocks[y][x], " ") != 0) {
+                DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, GameBlocks[y][x], White);
             }
         }
     }
 
     ScreenFlip();
     while (1) {
-        int blockmode = BLANK;
+        char blockmode[CHAR_BUF] = BLANK;
         WaitKey();
         while (GetMouseInput()) {
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
-                        if (blockmode == BLANK) {
+                        if (strcmp(blockmode, BLANK) == 0) {
                             //左クリック：白→黒→×を順次
-                            if(GetMouseInput() & MOUSE_INPUT_LEFT)
-                                switch(BlockStatus[y][x]) {
-                                case W:
-                                    blockmode = B;
-                                    break;
-                                case B:
-                                    blockmode = X;
-                                    break;
-                                case X:
-                                default:
-                                    blockmode = W;
-                                    break;
+                            if(GetMouseInput() & MOUSE_INPUT_LEFT){
+                                if (strcmp(BlockStatus[y][x], W) == 0) {
+                                    strcpy_s(blockmode, sizeof(blockmode), B);
                                 }
+                                else if (strcmp(BlockStatus[y][x], B) == 0) {
+                                    strcpy_s(blockmode, sizeof(blockmode), X);
+                                }
+                                else {
+                                    strcpy_s(blockmode, sizeof(blockmode), W);
+                                }
+                            }
                             //右クリック：白→×を交互
-                            if (GetMouseInput() & MOUSE_INPUT_RIGHT)
-                                switch (BlockStatus[y][x]) {
-                                case X:
-                                    blockmode = W;
-                                    break;
-                                case W:
-                                case B:
-                                default:
-                                    blockmode = X;
-                                    break;
+                            if (GetMouseInput() & MOUSE_INPUT_RIGHT){
+                                if (strcmp(BlockStatus[y][x], X) == 0) {
+                                    strcpy_s(blockmode, sizeof(blockmode), W);
                                 }
+                                else {
+                                    strcpy_s(blockmode, sizeof(blockmode), X);
+                                }
+                            }
                         }
-                        GameDrowing[y][x]->DrawBox(blockmode == W ? White : Black, true);
-                        if (blockmode == X) GameDrowing[y][x]->DrawX(White);
-                        BlockStatus[y][x] = blockmode;
+                        //success / failed画面の表示後は、下の【「ここから」～「ここまで」を、xとyのループ内で回す】という処理を、一回だけ
+                        /* ここから */
+                        GameDrowing[y][x]->DrawBox(strcmp(blockmode, W) == 0 ? White : Black, true);
+                        if (strcmp(blockmode, X) == 0) GameDrowing[y][x]->DrawX(White);
+                        strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), blockmode);
+                        /* ここまで */
                         ScreenFlip();
                     }
                 }
@@ -202,13 +212,22 @@ void initPazzle(int qnum, char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_B
                 function_status = 0;
                 return;
             }
-            if (false) { //TODO: 答え合わせのボタンを押すと
+            if (susumuzo->mouse_in()) { //TODO: 答え合わせのボタンを押すと
                 if (is_correct(GameBlocks, BlockStatus)) {
-                    break;
+                    function_status = 13;
+                    return;
                 }
                 else {
                     //TODO: 間違いの場合の処理（→再度入力待ちに）
-                    if (debug_mode) printfDx("incorrect!");
+                    //if (debug_mode) printfDx("incorrect!");
+                    back = LoadGraph("sozai/background1.png");
+                    DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
+
+                    failed = LoadGraph("sozai/Failed.png");
+                    DrawExtendGraph(0, 0, window_x, window_y, failed, TRUE);
+
+                    ScreenFlip();
+                    WaitKey();
                 }
             }
         }
@@ -225,9 +244,14 @@ int Opening() {
     //ChangeWindowMode(true);
 
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
+    PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
     title = LoadGraph("sozai/title2.png");
-    DrawExtendGraph(0, 0, 650, 480, title, FALSE);
+    DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
 
+    
+    if (KeyBuf[KEY_INPUT_W] == 1) {
+        return 1;
+    }
     if (debug_mode) {
         for (int i = 0; i < NUM_OF_QUESTION; i++) {
             Question_Button[i]->DrawBox(White, false);
@@ -245,7 +269,14 @@ int Opening() {
 }
 
 int Ending() {
-    DrawString(120, 40, "END", White);
+    back = LoadGraph("sozai/background1.png");
+    DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
+
+    clear = LoadGraph("sozai/Clear.png");
+    DrawExtendGraph(0, 0, window_x, window_y, clear, TRUE);
+
+    ScreenFlip();
+    WaitKey();
     if (KeyBuf[KEY_INPUT_W] == 1) return 14;
 }
 
@@ -258,11 +289,11 @@ void unloadFonts(LPCSTR font_path) {
     if (!RemoveFontResourceEx(font_path, FR_PRIVATE, NULL)) MessageBox(NULL, "remove failure", "", MB_OK);
 }
 
-bool is_correct(char GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]) {
+bool is_correct(const char *GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF]) {
     bool rtn = true;
     for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
         for (int y = 0; y < NUM_OF_BLOCK_X; y++) {
-            rtn &= GameBlocks[y][x] == BlockStatus[y][x];
+            rtn &= (strcmp(GameBlocks[y][x], BlockStatus[y][x]) == 0);
         }
     }
     return rtn;
