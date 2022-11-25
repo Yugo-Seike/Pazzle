@@ -124,7 +124,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
 
     SetFontSize(32);
     DrawString(150, 40, Question_name[qnum-1], White);
-    SetFontSize(25);
+    SetFontSize(20);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
     char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF];
