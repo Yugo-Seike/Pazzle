@@ -10,8 +10,8 @@
 #define SIZE_OF_BLOCK_X 45
 #define SIZE_OF_BLOCK_Y 45
 
-#define OFFSET_X        150
-#define OFFSET_Y        80
+#define OFFSET_X        300
+#define OFFSET_Y        100
 
 #define BORDER_WIDTH    1
 #define BORDER_COLOR    GetColor(57, 255, 255)
@@ -26,7 +26,7 @@ char KeyBuf[256];
 int Mouse = GetMouseInput();
 int color;
 int title,a;
-int masu,back,sikaku,dekasikaku,modoru;
+int masu,back,sikaku,dekasikaku,modoru,susumu,clear,failed;
 
 
 
@@ -44,7 +44,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
     DxLib_Init();
     SetGraphMode(1280, 1024, 32);
-    ChangeWindowMode(TRUE);
+    ChangeWindowMode(FALSE);
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
     loadFonts(font_path);
@@ -108,7 +108,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
 
     sikaku = LoadGraph("sozai/sikaku.png");
-    DrawExtendGraph(150, 30, 450, 80, sikaku, TRUE);
+    DrawExtendGraph(300, 30, 970, 200, sikaku, TRUE);
 
     //dekasikaku = LoadGraph("sozai/dekasikaku.png");
     //DrawExtendGraph(430, 170, 610, 470, dekasikaku, TRUE);
@@ -118,13 +118,17 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     //DrawString(120, 60, qnum_str, White);
 
     modoru = LoadGraph("sozai/戻るボタン.png");
-    DrawExtendGraph(10, 400, 150, 480, modoru, TRUE);
-    Area* modomodo = new Area(10, 400, 150, 480);
+    DrawExtendGraph(10, 850, 250, 1000, modoru, TRUE);
+    Area* modomodo = new Area(10, 850, 250, 1000);
+
+    susumu = LoadGraph("sozai/判定.png");
+    DrawExtendGraph(1000, 830, 1240, 1000, susumu, TRUE);
+    Area* susumuzo = new Area(1000, 830, 1280, 1000);
     
 
-    SetFontSize(32);
-    DrawString(150, 40, Question_name[qnum-1], White);
-    SetFontSize(20);
+    SetFontSize(34);
+    DrawString(300, 40, Question_name[qnum-1], White);
+    SetFontSize(28);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
     char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF];
@@ -203,13 +207,22 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
                 function_status = 0;
                 return;
             }
-            if (false) { //TODO: 答え合わせのボタンを押すと
+            if (susumuzo->mouse_in()) { //TODO: 答え合わせのボタンを押すと
                 if (is_correct(GameBlocks, BlockStatus)) {
-                    break;
+                    function_status = 13;
+                    return;
                 }
                 else {
                     //TODO: 間違いの場合の処理（→再度入力待ちに）
-                    if (debug_mode) printfDx("incorrect!");
+                    //if (debug_mode) printfDx("incorrect!");
+                    back = LoadGraph("sozai/background1.png");
+                    DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
+
+                    failed = LoadGraph("sozai/Failed.png");
+                    DrawExtendGraph(0, 0, window_x, window_y, failed, TRUE);
+
+                    ScreenFlip();
+                    WaitKey();
                 }
             }
         }
@@ -250,7 +263,14 @@ int Opening() {
 }
 
 int Ending() {
-    DrawString(120, 40, "END", White);
+    back = LoadGraph("sozai/background1.png");
+    DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
+
+    clear = LoadGraph("sozai/Clear.png");
+    DrawExtendGraph(0, 0, window_x, window_y, clear, TRUE);
+
+    ScreenFlip();
+    WaitKey();
     if (KeyBuf[KEY_INPUT_W] == 1) return 14;
 }
 
