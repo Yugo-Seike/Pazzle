@@ -79,7 +79,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 qidx = function_status - 1;
                 initPazzle(qnum, GameBlocks[qidx]);
 
-                if (KeyBuf[KEY_INPUT_SPACE] == 1) function_status++;    //なんのためにしているのかわからない
                 break;
 
             case 13:
@@ -125,7 +124,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
 
     SetFontSize(32);
     DrawString(150, 40, Question_name[qnum-1], White);
-    SetFontSize(25);
+    SetFontSize(20);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
     char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF];
