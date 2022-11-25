@@ -166,7 +166,6 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
                 for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
                     if (GameDrowing[y][x]->mouse_in()) {
-                        //クリック時の挙動が変。要デバッグ
                         if (strcmp(blockmode, BLANK) == 0) {
                             //左クリック：白→黒→×を順次
                             if(GetMouseInput() & MOUSE_INPUT_LEFT){
