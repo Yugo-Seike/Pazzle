@@ -5,7 +5,7 @@
 //#include <tchar.h>
 //#include <iostream>
 
-#define debug_mode 0
+#define debug_mode 1
 
 #define SIZE_OF_BLOCK_X 45
 #define SIZE_OF_BLOCK_Y 45
@@ -164,7 +164,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     }
 
     //ƒqƒ“ƒg‚Ì•\Ž¦
-    for (int y = 0; y < NUM_OF_BLOCK_Y + 4; y++) {
+    for (int y = 0; y < NUM_OF_BLOCK_Y + NUM_OF_HINT; y++) {
         for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
             if (GameBlocks[y][x] != nullptr && strcmp(GameBlocks[y][x], " ") != 0) {
                 DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, GameBlocks[y][x], White);
