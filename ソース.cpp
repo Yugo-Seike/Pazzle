@@ -58,7 +58,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
     setPositions();
-    PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
+
+    
 
     while (1) {
         ClearDrawScreen();                              //裏画面のデータを全て削除
@@ -111,6 +112,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]) {
     char qnum_str[8] = "";
     
+    StopSoundMem(music[0]);
+
     if (debug_mode) printfDx("called!");
     back = LoadGraph("sozai/background1.png");
     DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
@@ -278,7 +281,7 @@ int Opening() {
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
-
+    PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
     
     if (KeyBuf[KEY_INPUT_W] == 1) {
         return 1;
