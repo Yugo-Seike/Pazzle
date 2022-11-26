@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     music[1] = LoadSoundMem("music/ネコ.mp3");
     music[2] = LoadSoundMem("music/PS.mp3");
     music[3] = LoadSoundMem("music/イルカ.mp3");
-    music[4] = LoadSoundMem("music/カラス.mp3");
+    music[4] = LoadSoundMem("music/カラス.m4a");
     music[5] = LoadSoundMem("music/ケーキ.mp3");
     music[6] = LoadSoundMem("music/パンダ.mp3");
 
