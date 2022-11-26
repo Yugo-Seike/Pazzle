@@ -108,7 +108,6 @@ const char* GameBlocks[NUM_OF_QUESTION][NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLO
         { " "," "," "," "," "," " ," "," "," " ," "," "," "," "," "," ","\n"					         },
     },
     /*  Q5 ケーキ  デバッグ済み*/
-    //TO DO  縦ヒント一行追加
     {
         {  W , W , W , W , W , W , W , W , W , W , B , W , W , W , W , "1"," "," "," "," "," "," ","\n" },
         {  W , W , W , W , W , W , W , W , W , B , W , B , W , W , W , "1","1"," "," "," "," "," ","\n" },

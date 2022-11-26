@@ -53,6 +53,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ChangeFont("なごみ極細ゴシック ExtraLight", DX_CHARSET_DEFAULT);
 
     music[0] = LoadSoundMem("music/ロビー.mp3");
+    music[1] = LoadSoundMem("music/ネコ.mp3");
+    music[2] = LoadSoundMem("music/PS.mp3");
+    music[3] = LoadSoundMem("music/イルカ.mp3");
+    music[4] = LoadSoundMem("music/カラス.mp3");
+    music[5] = LoadSoundMem("music/ケーキ.mp3");
+    music[6] = LoadSoundMem("music/パンダ.mp3");
 
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
@@ -112,6 +118,8 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     char qnum_str[8] = "";
     
     StopSoundMem(music[0]);
+
+    PlaySoundMem(music[qnum], DX_PLAYTYPE_LOOP);
 
     if (debug_mode) printfDx("called!");
     back = LoadGraph("sozai/background1.png");
@@ -213,10 +221,12 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
                 }
             }
             if (modomodo->mouse_in()) {
+                StopSoundMem(music[qnum]);
                 function_status = 0;
                 return;
             }
             if (susumuzo->mouse_in()) { //TODO: 答え合わせのボタンを押すと
+                StopSoundMem(music[qnum]);
                 if (is_correct(GameBlocks, BlockStatus)) {
                     function_status = 13;
                     return;
