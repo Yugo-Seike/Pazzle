@@ -43,9 +43,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     int qnum = 0, qidx = 0;
     //LPCSTR font_path = "数式フォントver1.5.ttf"; 
     LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
+    SetOutApplicationLogValidFlag(debug_mode);
     DxLib_Init();
     SetGraphMode(1280, 1024, 32);
-    ChangeWindowMode(FALSE);
+    if (debug_mode) ChangeWindowMode(TRUE);
+    else ChangeWindowMode(FALSE);
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
     loadFonts(font_path);
@@ -56,6 +58,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
     setPositions();
+    PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
 
     while (1) {
         ClearDrawScreen();                              //裏画面のデータを全て削除
@@ -122,13 +125,15 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
 
     //DrawString(120, 60, qnum_str, White);
 
+    Area* modomodo = new Area(10, 850, 240, 150);
     modoru = LoadGraph("sozai/戻るボタン.png");
-    DrawExtendGraph(10, 850, 250, 1000, modoru, TRUE);
-    Area* modomodo = new Area(10, 850, 250, 1000);
+    modomodo->DrawExtendGraph(modoru);
+    //DrawExtendGraph(10, 850, 250, 1000, modoru, TRUE);
 
+    Area* susumuzo = new Area(1000, 830, 240, 170);
     susumu = LoadGraph("sozai/判定.png");
-    DrawExtendGraph(1000, 830, 1240, 1000, susumu, TRUE);
-    Area* susumuzo = new Area(1000, 830, 1280, 1000);
+    susumuzo->DrawExtendGraph(susumu);
+    //DrawExtendGraph(1000, 830, 1240, 1000, susumu, TRUE);
     
 
     SetFontSize(34);
@@ -159,7 +164,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     }
 
     //ヒントの表示
-    for (int y = 0; y < NUM_OF_BLOCK_Y + 4; y++) {
+    for (int y = 0; y < NUM_OF_BLOCK_Y + NUM_OF_HINT; y++) {
         for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
             if (GameBlocks[y][x] != nullptr && strcmp(GameBlocks[y][x], " ") != 0) {
                 DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, GameBlocks[y][x], White);
@@ -198,12 +203,9 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
                                 }
                             }
                         }
-                        //success / failed画面の表示後は、下の【「ここから」～「ここまで」を、xとyのループ内で回す】という処理を、一回だけ
-                        /* ここから */
-                        GameDrowing[y][x]->DrawBox(strcmp(blockmode, W) == 0 ? White : Black, true);
-                        if (strcmp(blockmode, X) == 0) GameDrowing[y][x]->DrawX(White);
+                        GameDrowing[y][x]->DrawBox(strcmp(blockmode, B) == 0 ? Black : White, true);
+                        if (strcmp(blockmode, X) == 0) GameDrowing[y][x]->DrawX(Black);
                         strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), blockmode);
-                        /* ここまで */
                         ScreenFlip();
                     }
                 }
@@ -228,6 +230,36 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
 
                     ScreenFlip();
                     WaitKey();
+
+                    if ((new WindowArea(0, 9.0 / 11, 1, 1.0 / 11))->mouse_in()) {
+                        function_status = 0;
+                        return;
+                    }
+
+                    DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
+                    DrawExtendGraph(300, 30, 970, 200, sikaku, TRUE);
+                    modomodo->DrawExtendGraph(modoru);
+                    susumuzo->DrawExtendGraph(susumu);
+
+                    SetFontSize(34);
+                    DrawString(300, 40, Question_name[qnum - 1], White);
+                    SetFontSize(28);
+
+                    //ブロックの状態復元
+                    for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
+                        for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
+                            GameDrowing[y][x]->DrawBox(strcmp(BlockStatus[y][x], B) == 0 ? Black : White, true);
+                            if (strcmp(BlockStatus[y][x], X) == 0) GameDrowing[y][x]->DrawX(Black);
+                        }
+                    }
+                    //ヒントの表示
+                    for (int y = 0; y < NUM_OF_BLOCK_Y + 4; y++) {
+                        for (int x = y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X : 0; x < (y < NUM_OF_BLOCK_Y ? NUM_OF_BLOCK_X + NUM_OF_HINT : NUM_OF_BLOCK_X); x++) {
+                            if (GameBlocks[y][x] != nullptr && strcmp(GameBlocks[y][x], " ") != 0) {
+                                DrawString(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, GameBlocks[y][x], White);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -244,7 +276,6 @@ int Opening() {
     //ChangeWindowMode(true);
 
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
-    PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
 
@@ -293,7 +324,7 @@ bool is_correct(const char *GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOC
     bool rtn = true;
     for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
         for (int y = 0; y < NUM_OF_BLOCK_X; y++) {
-            rtn &= (strcmp(GameBlocks[y][x], BlockStatus[y][x]) == 0);
+            rtn &= (strcmp(BlockStatus[y][x], GameBlocks[y][x]) == 0) || (strcmp(BlockStatus[y][x], X) == 0 && strcmp(GameBlocks[y][x], W) == 0);
         }
     }
     return rtn;
