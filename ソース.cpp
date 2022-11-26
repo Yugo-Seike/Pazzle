@@ -44,11 +44,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //LPCSTR font_path = "数式フォントver1.5.ttf"; 
     LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
     SetOutApplicationLogValidFlag(debug_mode);
-    DxLib_Init();
+    if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
     SetGraphMode(1280, 1024, 32);
     if (debug_mode) ChangeWindowMode(TRUE);
     else ChangeWindowMode(FALSE);
-    if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
 
     loadFonts(font_path);
     ChangeFont("なごみ極細ゴシック ExtraLight", DX_CHARSET_DEFAULT);
@@ -278,11 +277,6 @@ int Opening() {
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
-
-    
-    if (KeyBuf[KEY_INPUT_W] == 1) {
-        return 1;
-    }
     if (debug_mode) {
         for (int i = 0; i < NUM_OF_QUESTION; i++) {
             Question_Button[i]->DrawBox(White, false);
@@ -297,6 +291,7 @@ int Opening() {
             }
         }
     }
+    return 0;
 }
 
 int Ending() {
