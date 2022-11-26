@@ -27,7 +27,7 @@ int Mouse = GetMouseInput();
 int color;
 int title,a;
 int masu,back,sikaku,dekasikaku,modoru,susumu,clear,failed;
-int music[14];
+int music[15];
 
 
 
@@ -66,6 +66,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     music[11] = LoadSoundMem("music/時計.mp3");
     music[12] = LoadSoundMem("music/非常口.mp3");
     music[13] = LoadSoundMem("music/clear.mp3");
+    music[14] = LoadSoundMem("music/failed.mp3");
 
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
@@ -125,7 +126,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     char qnum_str[8] = "";
     
     StopSoundMem(music[0]);
-    StopSoundMem(music[13]);
+    
 
     PlaySoundMem(music[qnum], DX_PLAYTYPE_LOOP);
 
@@ -243,6 +244,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
                 else {
                     //TODO: 間違いの場合の処理（→再度入力待ちに）
                     //if (debug_mode) printfDx("incorrect!");
+                    PlaySoundMem(music[14], DX_PLAYTYPE_LOOP);
                     back = LoadGraph("sozai/background1.png");
                     DrawExtendGraph(0, 0, window_x, window_y, back, FALSE);
 
@@ -252,7 +254,11 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
                     ScreenFlip();
                     WaitKey();
 
+                    StopSoundMem(music[14]);
+                    PlaySoundMem(music[qnum], DX_PLAYTYPE_LOOP);
+
                     if ((new WindowArea(0, 9.0 / 11, 1, 1.0 / 11))->mouse_in()) {
+                        StopSoundMem(music[qnum]);
                         function_status = 0;
                         return;
                     }
@@ -298,6 +304,9 @@ int Opening() {
     //ChangeWindowMode(true);
 
     //LoadGraphScreen(0, 0, "sozai/title.png", TRUE);
+    StopSoundMem(music[13]);
+    StopSoundMem(music[14]);
+
     title = LoadGraph("sozai/title2.png");
     DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
     PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
