@@ -273,6 +273,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
 }
 
 int Opening() {
+    int rtn = 0;
     //DrawString(100, 100, "ƒ^ƒCƒgƒ‹‰æ–Ê", White);
 
     //ChangeWindowMode(true);
@@ -282,24 +283,26 @@ int Opening() {
     DrawExtendGraph(0, 0, window_x, window_y, title, FALSE);
     PlaySoundMem(music[0], DX_PLAYTYPE_LOOP);
     
-    if (KeyBuf[KEY_INPUT_W] == 1) {
-        return 1;
-    }
+    //if (KeyBuf[KEY_INPUT_W] == 1) {
+    //    return 1;
+    //}
     if (debug_mode) {
         for (int i = 0; i < NUM_OF_QUESTION; i++) {
             Question_Button[i]->DrawBox(White, false);
         }
     }
     ScreenFlip();
-    WaitKey();
-    if (GetMouseInput() & MOUSE_INPUT_LEFT) {
-        for (int i = 0; i < NUM_OF_QUESTION; i++) {
-            if (Question_Button[i]->mouse_in()) {
-                return i + 1;
+    while (!rtn) {
+        WaitKey();
+        if (GetMouseInput() & MOUSE_INPUT_LEFT) {
+            for (int i = 0; i < NUM_OF_QUESTION; i++) {
+                if (Question_Button[i]->mouse_in()) {
+                    rtn = i + 1;
+                }
             }
         }
     }
-    return 0;
+    return rtn;
 }
 
 int Ending() {
