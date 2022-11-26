@@ -27,7 +27,7 @@ int Mouse = GetMouseInput();
 int color;
 int title,a;
 int masu,back,sikaku,dekasikaku,modoru,susumu,clear,failed;
-int music[13];
+int music[14];
 
 
 
@@ -65,6 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     music[10] = LoadSoundMem("music/P.mp3");
     music[11] = LoadSoundMem("music/Œv.mp3");
     music[12] = LoadSoundMem("music/”ñíŒû.mp3");
+    music[13] = LoadSoundMem("music/clear.mp3");
 
     SetDrawScreen(DX_SCREEN_BACK);                      //•`‰ææ‚ğ— ‰æ–Ê‚Éİ’è
     GetScreenState(&window_x, &window_y, &color);
@@ -124,6 +125,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     char qnum_str[8] = "";
     
     StopSoundMem(music[0]);
+    StopSoundMem(music[13]);
 
     PlaySoundMem(music[qnum], DX_PLAYTYPE_LOOP);
 
@@ -234,6 +236,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
             if (susumuzo->mouse_in()) { //TODO: “š‚¦‡‚í‚¹‚Ìƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚Æ
                 StopSoundMem(music[qnum]);
                 if (is_correct(GameBlocks, BlockStatus)) {
+                    PlaySoundMem(music[13], DX_PLAYTYPE_BACK);
                     function_status = 13;
                     return;
                 }
