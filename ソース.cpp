@@ -5,7 +5,7 @@
 //#include <tchar.h>
 //#include <iostream>
 
-#define debug_mode 1
+#define debug_mode 0
 
 #define SIZE_OF_BLOCK_X 45
 #define SIZE_OF_BLOCK_Y 45
@@ -43,6 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     int qnum = 0, qidx = 0;
     //LPCSTR font_path = "数式フォントver1.5.ttf"; 
     LPCSTR font_path = "NagomiGokubosoGothic-ExtraLight.otf"; //読み込むフォントファイルのパス
+    SetOutApplicationLogValidFlag(debug_mode);
     DxLib_Init();
     SetGraphMode(1280, 1024, 32);
     if (debug_mode) ChangeWindowMode(TRUE);
