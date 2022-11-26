@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     SetOutApplicationLogValidFlag(debug_mode);
     if (DxLib_Init() == -1) return -1;                  //ＤＸライブラリ初期化処理 エラーが起きたら終了 
     SetGraphMode(1280, 1024, 32);
-    if (debug_mode) ChangeWindowMode(TRUE);
+    if (debug_mode) ChangeWindowMode(FALSE);
     else ChangeWindowMode(FALSE);
 
     loadFonts(font_path);
