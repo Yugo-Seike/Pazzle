@@ -59,6 +59,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     music[4] = LoadSoundMem("music/カラス.m4a");
     music[5] = LoadSoundMem("music/ケーキ.mp3");
     music[6] = LoadSoundMem("music/パンダ.mp3");
+    music[7] = LoadSoundMem("music/ピース.mp3");
+    music[8] = LoadSoundMem("music/ペンギン.mp3");
 
     SetDrawScreen(DX_SCREEN_BACK);                      //描画先を裏画面に設定
     GetScreenState(&window_x, &window_y, &color);
