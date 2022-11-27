@@ -19,7 +19,6 @@
 #define White           GetColor(255, 255, 255)         //色の取得
 #define Black           GetColor(0, 0, 0)               //色の取得
 
-#define CHAR_BUF        4
 
 
 char KeyBuf[256];
@@ -31,7 +30,7 @@ int music[15];
 
 
 
-bool is_correct(const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF]);
+bool is_correct(const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char* BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]);
 void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT]);
 int Opening();
 int Ending();
@@ -160,7 +159,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     SetFontSize(28);
 
     Area* GameDrowing[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
-    char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF];
+    char* BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X];
     (new Area(OFFSET_X - BORDER_WIDTH,
         OFFSET_Y - BORDER_WIDTH,
         SIZE_OF_BLOCK_X * NUM_OF_BLOCK_X + BORDER_WIDTH,
@@ -172,9 +171,11 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
         for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
             GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
             GameDrowing[y][x]->DrawBox(White, true);
+            BlockStatus[y][x] = (char*)malloc(sizeof(W));
             strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), W);
             if (debug_mode) {
                 //デバッグモードでは解答を表示
+                BlockStatus[y][x] = (char*)malloc(sizeof(GameBlocks[y][x]));
                 strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), GameBlocks[y][x]);
                 if (strcmp(GameBlocks[y][x], W) == 0) GameDrowing[y][x]->DrawBox(White, true);
                 if (strcmp(GameBlocks[y][x], B) == 0) GameDrowing[y][x]->DrawBox(Black, true);
@@ -193,7 +194,8 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
 
     ScreenFlip();
     while (1) {
-        char blockmode[CHAR_BUF] = BLANK;
+        char* blockmode;
+        blockmode = (char*)malloc(sizeof(BLANK));
         WaitKey();
         while (GetMouseInput()) {
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
@@ -354,7 +356,7 @@ void unloadFonts(LPCSTR font_path) {
     if (!RemoveFontResourceEx(font_path, FR_PRIVATE, NULL)) MessageBox(NULL, "remove failure", "", MB_OK);
 }
 
-bool is_correct(const char *GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X][CHAR_BUF]) {
+bool is_correct(const char *GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][NUM_OF_BLOCK_X + NUM_OF_HINT], char* BlockStatus[NUM_OF_BLOCK_Y][NUM_OF_BLOCK_X]) {
     bool rtn = true;
     for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
         for (int y = 0; y < NUM_OF_BLOCK_X; y++) {
