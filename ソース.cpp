@@ -171,11 +171,11 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
         for (int x = 0; x < NUM_OF_BLOCK_X; x++) {
             GameDrowing[y][x] = new Area(x * SIZE_OF_BLOCK_X + OFFSET_X, y * SIZE_OF_BLOCK_Y + OFFSET_Y, SIZE_OF_BLOCK_X - BORDER_WIDTH, SIZE_OF_BLOCK_Y - BORDER_WIDTH);
             GameDrowing[y][x]->DrawBox(White, true);
-            BlockStatus[y][x] = (char*)malloc(sizeof(W));
+            BlockStatus[y][x] = new char[sizeof(W)];
             strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), W);
             if (debug_mode) {
                 //デバッグモードでは解答を表示
-                BlockStatus[y][x] = (char*)malloc(sizeof(GameBlocks[y][x]));
+                BlockStatus[y][x] = new char[sizeof(GameBlocks[y][x])];
                 strcpy_s(BlockStatus[y][x], sizeof(BlockStatus[y][x]), GameBlocks[y][x]);
                 if (strcmp(GameBlocks[y][x], W) == 0) GameDrowing[y][x]->DrawBox(White, true);
                 if (strcmp(GameBlocks[y][x], B) == 0) GameDrowing[y][x]->DrawBox(Black, true);
@@ -195,7 +195,7 @@ void initPazzle(int qnum, const char* GameBlocks[NUM_OF_BLOCK_Y + NUM_OF_HINT][N
     ScreenFlip();
     while (1) {
         char* blockmode;
-        blockmode = (char*)malloc(sizeof(BLANK));
+        blockmode = new char[sizeof(BLANK)];
         WaitKey();
         while (GetMouseInput()) {
             for (int y = 0; y < NUM_OF_BLOCK_Y; y++) {
